@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://docs.genomeai.space
+    about: Read the docs and the Genome Standard.
+  - name: 💬 Ask a question
+    url: https://github.com/genomeai/genomeai/discussions
+    about: Ask and discuss in GitHub Discussions.
+  - name: 📧 Contact
+    url: mailto:contact@genomeai.space
+    about: Email us for partnerships or private matters.
