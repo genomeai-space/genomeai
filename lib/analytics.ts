@@ -11,7 +11,9 @@ export interface AnalyticsEvent {
   props?: Record<string, string | number | boolean | undefined>;
 }
 
-const ENDPOINT = "/api/track"; // configure to your backend / proxy
+// Configure an analytics endpoint via env (e.g. VITE_ANALYTICS_ENDPOINT).
+// Leave unset to disable network analytics in production.
+const ENDPOINT = import.meta.env.VITE_ANALYTICS_ENDPOINT || "";
 
 function allowed(): boolean {
   if (typeof navigator === "undefined") return false;
@@ -39,6 +41,8 @@ export function track(event: AnalyticsEvent | string): void {
     console.debug("[analytics]", e.name, e.props ?? {});
     return;
   }
+  // If no endpoint is configured, do not send analytics in prod.
+  if (!ENDPOINT) return;
 
   try {
     const payload = JSON.stringify({
