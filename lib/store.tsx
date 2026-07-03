@@ -162,32 +162,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const enterApp = useCallback(() => go({ area: "app", tab: "library" }), [go]);
 
   const signIn = useCallback(async (name: string, email: string) => {
-    try {
-      // Lazy import supabase so it doesn't break if env vars are missing
-      const { supabase } = await import('./supabase');
-      if (supabase) {
-        const { data, error } = await supabase
-          .from('approved_users')
-          .select('*')
-          .eq('email', email.toLowerCase())
-          .single();
-          
-        if (error || !data) {
-          throw new Error("This email is not on the approved early access list. Please request access.");
-        }
-      } else {
-        // Fallback mock logic if no Supabase configured
-        const allowed = ["guest@genome.ai", "engineer@genome.ai", "contact@genomeai.space"];
-        await new Promise((r) => setTimeout(r, 600));
-
-        if (!allowed.includes(email.toLowerCase())) {
-          throw new Error("This email is not on the approved early access list. Please request access.");
-        }
-      }
-    } catch (e: any) {
-      throw new Error(e.message || "Failed to authenticate.");
+    const { supabase } = await import("./supabase");
+    if (!supabase) {
+      throw new Error("Supabase is not configured.");
     }
 
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: "https://genomeai.space/app" },
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // Tell the user to check their email for the sign-in link.
     setState((s) => ({ ...s, user: { name: name.trim() || "Genome Engineer", email } }));
   }, []);
   const signOut = useCallback(() => {

@@ -30,9 +30,11 @@ export function AuthModal() {
   const [currentMethod, setCurrentMethod] = useState("");
   const [tier, setTier] = useState<TierId | "">("");
   const [requested, setRequested] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
 
   const close = () => {
     setRequested(false);
+    setOtpSent(false);
     closeAuth();
   };
 
@@ -44,8 +46,7 @@ export function AuthModal() {
     setLoading(true);
     try {
       await signIn(name, email || "engineer@genome.ai");
-      closeAuth();
-      enterApp();
+      setOtpSent(true);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -59,67 +60,93 @@ export function AuthModal() {
     <>
       {/* ── Sign in ── */}
       <Modal open={auth === "signin"} onClose={close}>
-        <div className="text-center">
-          <div className="mb-4 flex justify-center">
-            <BrandLogo />
-          </div>
-          <h3 className="font-display text-xl font-bold text-forest">Welcome back</h3>
-          <p className="mt-1.5 text-sm text-stone">
-            Existing approved users — sign in to access your DNA Library, Editor,
-            Playground & Benchmarks.
-          </p>
-        </div>
-
-        <div className="mt-6 space-y-3">
-          <div>
-            <label className="mb-1 block text-[12px] font-semibold text-stone">Name</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && submitSignIn()}
-              placeholder="Ada Lovelace"
-              className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-[12px] font-semibold text-stone">Email</label>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && submitSignIn()}
-              type="email"
-              placeholder="you@lab.dev"
-              className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
-            />
-          </div>
-          {error && (
-            <div className="rounded-lg bg-clay/10 px-3 py-2 text-[12.5px] text-clay">
-              {error}
+        {otpSent ? (
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-mint">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2f6b43" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
             </div>
-          )}
-          <Button className="mt-2 w-full" size="lg" onClick={submitSignIn} disabled={loading || !email}>
-            {loading ? "Checking access…" : "Sign in →"}
-          </Button>
-          <button
-            onClick={() => {
-              signIn("Guest Engineer", "guest@genome.ai");
-              closeAuth();
-              enterApp();
-            }}
-            className="w-full py-1 text-[12px] text-mist hover:text-forest"
-          >
-            or continue as guest
-          </button>
-        </div>
-        <div className="mt-4 border-t border-sand pt-3 text-center text-[12px] text-stone">
-          Not approved yet?{" "}
-          <button
-            onClick={() => openAuth("request")}
-            className="font-semibold text-moss hover:underline"
-          >
-            Request early access
-          </button>
-        </div>
+            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-moss">
+              Check your email
+            </span>
+            <h3 className="mt-1 font-display text-2xl font-bold text-forest">
+              Sign-in link sent
+            </h3>
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-stone">
+              We've sent a sign-in link to{" "}
+              <span className="font-medium text-forest">{email}</span>. Click it to access your
+              genomes.
+            </p>
+            <Button className="mt-5 w-full" size="lg" onClick={close}>
+              Done
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="text-center">
+              <div className="mb-4 flex justify-center">
+                <BrandLogo />
+              </div>
+              <h3 className="font-display text-xl font-bold text-forest">Welcome back</h3>
+              <p className="mt-1.5 text-sm text-stone">
+                Existing approved users — sign in to access your DNA Library, Editor,
+                Playground & Benchmarks.
+              </p>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              <div>
+                <label className="mb-1 block text-[12px] font-semibold text-stone">Name</label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && submitSignIn()}
+                  placeholder="Ada Lovelace"
+                  className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-[12px] font-semibold text-stone">Email</label>
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && submitSignIn()}
+                  type="email"
+                  placeholder="you@lab.dev"
+                  className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
+                />
+              </div>
+              {error && (
+                <div className="rounded-lg bg-clay/10 px-3 py-2 text-[12.5px] text-clay">
+                  {error}
+                </div>
+              )}
+              <Button className="mt-2 w-full" size="lg" onClick={submitSignIn} disabled={loading || !email}>
+                {loading ? "Sending link…" : "Sign in →"}
+              </Button>
+              <button
+                onClick={() => {
+                  signIn("Guest Engineer", "guest@genome.ai");
+                  closeAuth();
+                  enterApp();
+                }}
+                className="w-full py-1 text-[12px] text-mist hover:text-forest"
+              >
+                or continue as guest
+              </button>
+            </div>
+            <div className="mt-4 border-t border-sand pt-3 text-center text-[12px] text-stone">
+              Not approved yet?{" "}
+              <button
+                onClick={() => openAuth("request")}
+                className="font-semibold text-moss hover:underline"
+              >
+                Request early access
+              </button>
+            </div>
+          </>
+        )}
       </Modal>
 
       {/* ── Request early access ── */}
