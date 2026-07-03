@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="https://genomeai.space">🌐 Website</a> ·
-  <a href="[https://docs.genomeai.space](https://github.com/genomeai-space/genomeai/blob/main/docs/API_CONTRACT.md)">📚 Docs</a> ·
+  <a href="https://github.com/genomeai-space/genomeai/blob/main/docs/API_CONTRACT.md">📚 Docs</a> ·
   <a href="https://x.com/genomeai">𝕏 Twitter</a> ·
   <a href="#features">✨ Features</a>
 </p>
