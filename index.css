@@ -1,0 +1,311 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Cream / neutrals */
+  --color-cream: #f4f0e6;
+  --color-paper: #fcfaf4;
+  --color-sand: #e7e0cf;
+  --color-linen: #efe9da;
+  --color-ink: #15241c;
+  --color-stone: #647060;
+  --color-mist: #aab3a3;
+
+  /* Greens */
+  --color-forest: #122a20;
+  --color-forest-700: #1c3d2e;
+  --color-forest-600: #244a37;
+  --color-moss: #2f6b43;
+  --color-leaf: #4e9f6d;
+  --color-spring: #6fc290;
+  --color-mint: #d7efe0;
+  --color-fog: #eaf4ee;
+
+  /* Warm accent (sparingly) */
+  --color-honey: #d6a23a;
+  --color-clay: #b9573f;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.35rem;
+  --radius-3xl: 1.75rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Dark mode ───────────────────────────────────────────────
+   The whole UI is token-driven, so overriding the theme
+   variables here re-themes ~all surfaces at once. Greens
+   brighten for contrast on dark; `forest` flips to a light
+   mint so headings (text-forest) stay readable.
+*/
+:root.dark {
+  --color-cream: #0b1310;
+  --color-paper: #121d16;
+  --color-sand: #2a3a2e;
+  --color-linen: #16221a;
+  --color-ink: #e8efe8;
+  --color-stone: #a4b3a6;
+  --color-mist: #76867a;
+
+  --color-forest: #d7efe0;
+  --color-forest-700: #1f3a2c;
+  --color-forest-600: #2a4a37;
+  --color-moss: #5fbf7e;
+  --color-leaf: #6fc290;
+  --color-spring: #8fd0a8;
+  --color-mint: #1c2e22;
+  --color-fog: #16221a;
+
+  --color-honey: #e0ad52;
+  --color-clay: #d06a52;
+}
+
+:root.dark body {
+  background-color: var(--color-cream);
+}
+
+/* Subtle paper grain via layered gradients */
+.bg-grain {
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(18, 42, 32, 0.05) 1px,
+      transparent 0
+    );
+  background-size: 22px 22px;
+}
+
+.bg-grid {
+  background-image: linear-gradient(rgba(46, 107, 67, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 107, 67, 0.07) 1px, transparent 1px);
+  background-size: 38px 38px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c4cdbb;
+  border-radius: 999px;
+  border: 2px solid var(--color-cream);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-spring);
+}
+:root.dark ::-webkit-scrollbar-thumb {
+  background: #2f4a3a;
+}
+
+::selection {
+  background: var(--color-mint);
+  color: var(--color-forest);
+}
+
+/* ---- Animations ---- */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes helix-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+.animate-pulse-soft {
+  animation: pulse-soft 3.2s ease-in-out infinite;
+}
+.animate-flow {
+  stroke-dasharray: 8 10;
+  animation: flow 14s linear infinite;
+}
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes flow-down {
+  0% {
+    transform: translateY(-4px) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(34px) scale(0.6);
+    opacity: 0;
+  }
+}
+.flow-dot {
+  animation: flow-down 1.9s linear infinite;
+}
+
+@keyframes draw-line {
+  from {
+    stroke-dashoffset: 300;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.animate-draw {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: draw-line 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.6s;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(78, 159, 109, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(78, 159, 109, 0);
+  }
+}
+.glow-pulse {
+  animation: glow-pulse 2.4s ease-in-out infinite;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gene-bar {
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+}
+
+/* Range slider styling */
+input[type="range"].gene-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-sand);
+  outline: none;
+}
+input[type="range"].gene-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-paper);
+  border: 3px solid var(--color-moss);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(18, 42, 32, 0.25);
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+input[type="range"].gene-range::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  border-color: var(--color-leaf);
+}
+input[type="range"].gene-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-paper);
+  border: 3px solid var(--color-moss);
+  cursor: pointer;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
