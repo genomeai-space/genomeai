@@ -1,0 +1,6 @@
+# Genome AI — https://genomeai.space
+User-agent: *
+Allow: /
+Disallow: /screenshots
+
+Sitemap: https://genomeai.space/sitemap.xml

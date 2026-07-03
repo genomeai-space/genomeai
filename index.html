@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Genome AI — Engineer AI Behavior with Digital DNA</title>
+    <meta
+      name="description"
+      content="Genome AI: engineer AI behavior through Digital DNA instead of prompt engineering. Design, test, benchmark, and version how an AI reasons, plans, verifies, remembers, and communicates."
+    />
+    <meta name="theme-color" content="#2f6b43" />
+    <meta name="author" content="Genome AI" />
+    <meta name="keywords" content="Digital DNA, genome, AI behavior, prompt engineering, agent engineering, AI agents, benchmark, CrewAI, LangGraph, model-agnostic" />
+    <link rel="canonical" href="https://genomeai.space/" />
+
+    <!-- Favicon (self-contained SVG helix) -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23122a20'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cdefs%3E%3Cmask%20id='cut1'%3E%3Crect%20width='24'%20height='24'%20fill='white'/%3E%3Cpath%20d='M%2016%203%20C%2016%208,%208%208,%208%2012'%20stroke='black'%20stroke-width='5.5'/%3E%3C/mask%3E%3Cmask%20id='cut2'%3E%3Crect%20width='24'%20height='24'%20fill='white'/%3E%3Cpath%20d='M%208%2012%20C%208%2016,%2016%2016,%2016%2021'%20stroke='black'%20stroke-width='5.5'/%3E%3C/mask%3E%3C/defs%3E%3Cpath%20d='M%208%203%20C%208%208,%2016%208,%2016%2012'%20mask='url(%23cut1)'/%3E%3Cpath%20d='M%2016%2012%20C%2016%2016,%208%2016,%208%2021'/%3E%3Cpath%20d='M%2016%203%20C%2016%208,%208%208,%208%2012'/%3E%3Cpath%20d='M%208%2012%20C%208%2016,%2016%2016,%2016%2021'%20mask='url(%23cut2)'/%3E%3C/svg%3E"
+    />
+
+    <!-- Fonts: preconnect for faster first paint -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Light mode is the default. Only go dark when the user explicitly chose it. -->
+    <script>
+      (function () {
+        try {
+          var dark = localStorage.getItem("genome-ai:theme") === "dark";
+          if (dark) {
+            document.documentElement.classList.add("dark");
+            // keep the pre-CSS splash in sync with dark mode
+            var s = document.createElement("style");
+            s.textContent =
+              "#app-splash{background:#0b1310 !important;color:#e8efe8 !important}" +
+              "#app-splash div:last-child div:last-child{color:#a4b3a6 !important}";
+            document.head.appendChild(s);
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Genome AI" />
+    <meta property="og:title" content="Genome AI — Engineer AI Behavior with Digital DNA" />
+    <meta
+      property="og:description"
+      content="Design, test, benchmark, and version AI behavior through tunable genes. From prompt engineering to genome engineering."
+    />
+    <meta property="og:url" content="https://genomeai.space/" />
+    <meta property="og:image" content="https://genomeai.space/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Genome AI — Engineer AI behavior with Digital DNA" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Genome AI — Engineer AI Behavior with Digital DNA" />
+    <meta
+      name="twitter:description"
+      content="Replace prompt engineering with tunable genes. Structured, measurable, reusable AI behavior."
+    />
+    <meta name="twitter:image" content="https://genomeai.space/og-image.jpg" />
+    <meta name="twitter:site" content="@genomeai" />
+    <meta name="twitter:creator" content="@genomeai" />
+
+    <!-- Structured data (SoftwareApplication) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Genome AI",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "url": "https://genomeai.space/",
+        "description": "Engineer AI behavior with Digital DNA — structured, reusable, measurable genomes instead of prompt engineering.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Genome AI",
+          "url": "https://genomeai.space/"
+        }
+      }
+    </script>
+
+    <!--
+      Analytics: privacy-friendly. Uncomment & set your domain to enable Plausible
+      (no cookies, GDPR friendly). A built-in no-op tracker also ships in-app.
+      <script defer data-domain="genomeai.space" src="https://plausible.io/js/script.js"></script>
+    -->
+  </head>
+  <body>
+    <div id="root">
+      <!-- Initial loading splash (replaced when the app mounts) -->
+      <div id="app-splash" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#f4f0e6;color:#15241c;font-family:Inter,system-ui,sans-serif">
+        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#122a20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <defs>
+            <mask id="splash-cut1"><rect width="24" height="24" fill="white" /><path d="M 16 3 C 16 8, 8 8, 8 12" stroke="black" stroke-width="5.5" /></mask>
+            <mask id="splash-cut2"><rect width="24" height="24" fill="white" /><path d="M 8 12 C 8 16, 16 16, 16 21" stroke="black" stroke-width="5.5" /></mask>
+          </defs>
+          <g>
+            <animate attributeName="opacity" values="1;0.5;1" dur="1.6s" repeatCount="indefinite" />
+            <path d="M 8 3 C 8 8, 16 8, 16 12" mask="url(#splash-cut1)" />
+            <path d="M 16 12 C 16 16, 8 16, 8 21" />
+            <path d="M 16 3 C 16 8, 8 8, 8 12" />
+            <path d="M 8 12 C 8 16, 16 16, 16 21" mask="url(#splash-cut2)" />
+          </g>
+        </svg>
+        <div style="text-align:center">
+          <div style="font-weight:700;font-size:18px;letter-spacing:-0.01em">Genome AI</div>
+          <div style="font-size:13px;color:#647060;margin-top:4px">Engineering behavior…</div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
