@@ -456,3 +456,32 @@ export function whyThisAnswer(genes: Genes): WhyAnswer {
 
   return { influences, summary };
 }
+
+/**
+ * Generate output: tries production API first, falls back to mock engine
+ * Safe for public repo: no credentials required if production URL not configured
+ * @param prompt The task/question
+ * @param genes The genome configuration
+ * @returns Generated output with trace, metrics, and explanation
+ */
+export async function generateOutput(
+  prompt: string,
+  genes: Genes
+): Promise<GeneratedOutput> {
+  // Try production engine if configured
+  const productionResult = await (async () => {
+    try {
+      const { callProductionEngine } = await import("./api");
+      return await callProductionEngine(genes, prompt);
+    } catch {
+      return null;
+    }
+  })();
+
+  if (productionResult) {
+    return productionResult;
+  }
+
+  // Fall back to mock engine (deterministic, no costs)
+  return generate(prompt, genes);
+}

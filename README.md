@@ -30,6 +30,22 @@
 
 ---
 
+## 📦 Repository
+
+This is the **public frontend repository**.
+
+- **genomeai** (this repo) — React UI, landing page, mock engine, community
+  - Run locally without credentials
+  - Community contributions & issues welcome
+  - [Docs: ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+- **genome-engine** (private) — Real LLM compiler, billing, database, Edge Functions
+  - Proprietary backend logic
+  - Contains sensitive credentials
+  - [Template: GENOME_ENGINE_TEMPLATE.md](docs/GENOME_ENGINE_TEMPLATE.md)
+
+---
+
 ## 🧠 The one idea
 
 > **AI behavior can be engineered through Digital DNA rather than prompt engineering.**
