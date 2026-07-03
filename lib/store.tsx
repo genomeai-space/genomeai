@@ -97,7 +97,7 @@ interface StoreValue {
   enterApp: () => void;
 
   user: User | null;
-  signIn: (name: string, email: string) => Promise<void>;
+  signIn: (email: string) => Promise<void>;
   signInGuest: () => void;
   signOut: () => void;
 
@@ -162,7 +162,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const enterApp = useCallback(() => go({ area: "app", tab: "library" }), [go]);
 
-  const signIn = useCallback(async (name: string, email: string) => {
+  const signIn = useCallback(async (email: string) => {
     const { supabase } = await import("./supabase");
     if (!supabase) {
       throw new Error("Supabase is not configured.");
@@ -178,7 +178,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
 
     // Tell the user to check their email for the sign-in link.
-    setState((s) => ({ ...s, user: { name: name.trim() || "Genome Engineer", email } }));
+    // We no longer collect a name at sign-in; store an empty name and the email.
+    setState((s) => ({ ...s, user: { name: "", email } }));
   }, []);
   const signInGuest = useCallback(() => {
     const name = `Guest ${Math.floor(Math.random() * 9000) + 1000}`;

@@ -20,7 +20,7 @@ function SectionLabel({
 }
 
 export function AuthModal() {
-  const { route, openAuth, closeAuth, signIn, enterApp, goPage } = useStore();
+  const { route, openAuth, closeAuth, signIn, signInGuest, enterApp, goPage } = useStore();
   const auth = route.auth ?? null;
 
   const [name, setName] = useState("");
@@ -45,7 +45,7 @@ export function AuthModal() {
     setError(null);
     setLoading(true);
     try {
-      await signIn(name, email || "engineer@genome.ai");
+      await signIn(email || "engineer@genome.ai");
       setOtpSent(true);
     } catch (err: any) {
       setError(err.message);
@@ -96,16 +96,7 @@ export function AuthModal() {
             </div>
 
             <div className="mt-6 space-y-3">
-              <div>
-                <label className="mb-1 block text-[12px] font-semibold text-stone">Name</label>
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submitSignIn()}
-                  placeholder="Ada Lovelace"
-                  className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
-                />
-              </div>
+              {/* name removed — email-only sign-in */}
               <div>
                 <label className="mb-1 block text-[12px] font-semibold text-stone">Email</label>
                 <input
@@ -127,7 +118,7 @@ export function AuthModal() {
               </Button>
               <button
                 onClick={() => {
-                  signIn("Guest Engineer", "guest@genome.ai");
+                  signInGuest();
                   closeAuth();
                   enterApp();
                 }}
@@ -201,7 +192,7 @@ export function AuthModal() {
             <button
               onClick={() => {
                 closeAuth();
-                signIn("Guest Engineer", "guest@genome.ai");
+                signInGuest();
                 enterApp();
               }}
               className="mt-2 text-[12px] text-mist hover:text-forest"
