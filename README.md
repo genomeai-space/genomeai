@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="https://genomeai.space">🌐 Website</a> ·
-  <a href="https://docs.genomeai.space">📚 Docs</a> ·
+  <a href="[https://docs.genomeai.space](https://github.com/genomeai-space/genomeai/blob/main/docs/API_CONTRACT.md)">📚 Docs</a> ·
   <a href="https://x.com/genomeai">𝕏 Twitter</a> ·
   <a href="#features">✨ Features</a>
 </p>
@@ -175,7 +175,7 @@ Released under the **MIT License** — see [LICENSE](LICENSE).
 ## 🔗 Links
 
 - 🌐 Website: [genomeai.space](https://genomeai.space)
-- 📚 Docs: [docs.genomeai.space](https://docs.genomeai.space)
+- 📚 Docs: [docs.genomeai.space](https://github.com/genomeai-space/genomeai/blob/main/docs/API_CONTRACT.md)
 - 𝕏 Twitter: [@genomeai](https://x.com/genomeai)
 - 💬 Contact: [contact@genomeai.space](mailto:contact@genomeai.space)
 
