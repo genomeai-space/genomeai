@@ -98,6 +98,7 @@ interface StoreValue {
 
   user: User | null;
   signIn: (name: string, email: string) => Promise<void>;
+  signInGuest: () => void;
   signOut: () => void;
 
   genomes: Genome[];
@@ -178,6 +179,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     // Tell the user to check their email for the sign-in link.
     setState((s) => ({ ...s, user: { name: name.trim() || "Genome Engineer", email } }));
+  }, []);
+  const signInGuest = useCallback(() => {
+    const name = `Guest ${Math.floor(Math.random() * 9000) + 1000}`;
+    const email = `guest+${Date.now()}@local`;
+    setState((s) => ({ ...s, user: { name, email } }));
+    // navigate into the app after guest sign-in
+    setRoute({ area: "app", tab: "library" });
   }, []);
   const signOut = useCallback(() => {
     setState((s) => ({ ...s, user: null }));
@@ -321,6 +329,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       enterApp,
       user: state.user,
       signIn,
+      signInGuest,
       signOut,
       genomes,
       getGenome,
