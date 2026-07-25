@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Genome AI preview">
+  <rect width="1200" height="630" rx="36" fill="#f5efe2"/>
+  <rect x="42" y="42" width="1116" height="546" rx="30" fill="#ffffff"/>
+  <rect x="90" y="110" width="320" height="320" rx="28" fill="#183d2b"/>
+  <path d="M160 150c0 48 68 62 68 118 0 38-44 55-44 91" stroke="#f5efe2" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <path d="M280 150c0 48-68 62-68 118 0 38 44 55 44 91" stroke="#f5efe2" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <rect x="470" y="140" width="560" height="34" rx="17" fill="#dbe7dc"/>
+  <rect x="470" y="200" width="480" height="24" rx="12" fill="#7aa77e" opacity="0.8"/>
+  <rect x="470" y="246" width="520" height="24" rx="12" fill="#7aa77e" opacity="0.65"/>
+  <rect x="470" y="292" width="430" height="24" rx="12" fill="#7aa77e" opacity="0.5"/>
+  <rect x="470" y="368" width="320" height="24" rx="12" fill="#183d2b" opacity="0.8"/>
+  <rect x="470" y="418" width="250" height="24" rx="12" fill="#183d2b" opacity="0.5"/>
+  <text x="470" y="104" fill="#183d2b" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700">Genome AI</text>
+  <text x="470" y="348" fill="#183d2b" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="600">Engineer AI behavior with Digital DNA</text>
+</svg>
