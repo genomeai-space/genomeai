@@ -14,6 +14,7 @@ import { Screenshots } from "@/components/landing/Screenshots";
 import { NotFound } from "@/components/landing/NotFound";
 import { AuthModal } from "@/components/ui/AuthModal";
 import { pageview } from "@/lib/analytics";
+import { applySeoMetadata } from "@/lib/seo";
 import { Library } from "@/components/dashboard/Library";
 import { Editor } from "@/components/dashboard/Editor";
 import { Playground } from "@/components/dashboard/Playground";
@@ -55,6 +56,10 @@ function Router() {
         : `/${route.page && route.page !== "home" ? route.page : ""}`;
     pageview(path);
   }, [route.area, route.tab, route.page]);
+
+  useEffect(() => {
+    applySeoMetadata(route);
+  }, [route]);
 
   // guard: app area requires a (mock) signed-in user
   if (route.area === "app" && !user) {

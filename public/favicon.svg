@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Genome AI logo">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#183d2b" />
+      <stop offset="100%" stop-color="#4f8f63" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#f5efe2" />
+  <path d="M20 16c0 8 10 10 10 20 0 7-8 10-8 16" stroke="url(#g)" stroke-width="5" fill="none" stroke-linecap="round" />
+  <path d="M44 16c0 8-10 10-10 20 0 7 8 10 8 16" stroke="url(#g)" stroke-width="5" fill="none" stroke-linecap="round" />
+  <path d="M20 16c0 8 10 10 10 20 0 7-8 10-8 16" stroke="#122a20" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.2" />
+  <path d="M44 16c0 8-10 10-10 20 0 7 8 10 8 16" stroke="#122a20" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.2" />
+</svg>
