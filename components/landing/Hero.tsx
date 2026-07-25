@@ -66,6 +66,23 @@ export function Hero({ onEnter, onPlay }: { onEnter: () => void; onPlay: () => v
             </Button>
           </div>
 
+          <div className="mt-6">
+            <a
+              href="https://orynth.dev/projects/genomeai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex rounded-full border border-sand bg-paper/80 p-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <img
+                src="https://orynth.dev/api/badge/genomeai?theme=light&style=default"
+                alt="Featured on Orynth"
+                width="260"
+                height="80"
+                className="h-auto w-[220px] sm:w-[260px]"
+              />
+            </a>
+          </div>
+
           <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-stone">
             <span className="font-medium text-forest">10 tunable genes</span>
             <span className="h-4 w-px bg-sand" />
