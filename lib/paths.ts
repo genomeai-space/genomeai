@@ -14,6 +14,7 @@ export const INDEXABLE_LANDING_PAGES = [
   "contact",
   "privacy",
   "terms",
+  "learn",
 ] as const satisfies readonly LandingPage[];
 
 /** Crawlable but noindex (thin/utility pages). */
@@ -63,11 +64,13 @@ export function isIndexableLandingPage(
   return (INDEXABLE_LANDING_PAGES as readonly string[]).includes(page);
 }
 
-/** Serialize app route state to a browser pathname (+ optional hash). */
+/** Serialize app route state to a browser pathname (+ optional hash).
+ * Trailing slashes match GitHub Pages directory URLs and sitemap locs.
+ */
 export function routeToPath(route: Route): string {
   if (route.area === "app") {
     const tab = route.tab || "library";
-    return tab === "library" ? "/app" : `/app/${tab}`;
+    return tab === "library" ? "/app/" : `/app/${tab}/`;
   }
 
   const page = route.page ?? "home";
@@ -83,10 +86,18 @@ export function routeToPath(route: Route): string {
   }
 
   if (page === "notfound") {
-    return "/404";
+    return "/404/";
   }
 
-  return `/${page}`;
+  // Learn hub + article slugs: /learn/ or /learn/<slug>/
+  if (page === "learn") {
+    if (route.section) {
+      return `/learn/${route.section}/`;
+    }
+    return "/learn/";
+  }
+
+  return `/${page}/`;
 }
 
 /** Parse location into route state. Unknown paths → notfound. */
@@ -114,9 +125,19 @@ export function pathToRoute(pathname: string, hash = ""): Route {
     return { area: "landing", tab: "library", page: "notfound" };
   }
 
-  const slug = clean.replace(/^\//, "").split("/")[0];
+  const parts = clean.replace(/^\//, "").split("/").filter(Boolean);
+  const slug = parts[0] ?? "";
 
-  if (LANDING_PAGE_SET.has(slug)) {
+  if (slug === "learn") {
+    return {
+      area: "landing",
+      tab: "library",
+      page: "learn",
+      section: parts[1] || undefined,
+    };
+  }
+
+  if (LANDING_PAGE_SET.has(slug) && parts.length === 1) {
     return { area: "landing", tab: "library", page: slug as LandingPage };
   }
 
@@ -134,11 +155,23 @@ export function absoluteUrl(path: string, origin: string): string {
   return `${origin}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
 }
 
-export function pathForLandingPage(page: LandingPage): string {
+export function pathForLandingPage(page: LandingPage, section?: string): string {
   if (page === "home") return "/";
   if ((HOME_SECTION_IDS as readonly string[]).includes(page)) {
     return `/#${page}`;
   }
-  if (page === "notfound") return "/404";
-  return `/${page}`;
+  if (page === "notfound") return "/404/";
+  if (page === "learn") {
+    return section ? `/learn/${section}/` : "/learn/";
+  }
+  return `/${page}/`;
+}
+
+/** Canonical absolute URL (trailing slash for non-root paths). */
+export function canonicalUrlForPath(pathname: string, origin: string): string {
+  const [raw] = pathname.split("#");
+  const path = raw || "/";
+  if (path === "/" || path === "") return `${origin}/`;
+  const withSlash = path.endsWith("/") ? path : `${path}/`;
+  return `${origin}${withSlash.startsWith("/") ? withSlash : `/${withSlash}`}`;
 }

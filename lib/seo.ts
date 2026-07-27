@@ -1,6 +1,8 @@
 import type { Route } from "@/lib/store";
+import { getArticle } from "@/lib/content";
 import { FAQS } from "@/lib/faq";
 import {
+  canonicalUrlForPath,
   isIndexableLandingPage,
   pathForLandingPage,
   routeToPath,
@@ -82,6 +84,11 @@ const PAGE_METADATA: Partial<Record<string, PageMeta>> = {
   terms: {
     title: "Terms of Service",
     description: "Read the terms governing your use of Genome AI.",
+  },
+  learn: {
+    title: "Learn Digital DNA",
+    description:
+      "Guides on Digital DNA, genome vs prompt engineering, the Genome Engine, and benchmarking AI behavior.",
   },
   screenshots: {
     title: "Screenshots",
@@ -177,6 +184,15 @@ export function getSeoMetadata(route: Route) {
       description = pageMeta.description;
     }
 
+    // Article-level meta for /learn/<slug>/
+    if (page === "learn" && route.section) {
+      const article = getArticle(route.section);
+      if (article) {
+        title = `${article.title} | ${SITE.name}`;
+        description = article.description;
+      }
+    }
+
     if (page === "notfound" || page === "screenshots") {
       robots = "noindex,follow";
     } else if (!isIndexableLandingPage(page) && page !== "home") {
@@ -193,17 +209,14 @@ export function getSeoMetadata(route: Route) {
     }
   }
 
-  const canonicalPath =
-    route.area === "landing" && (route.page === "home" || !route.page)
-      ? "/"
-      : route.area === "landing" && route.page && path.startsWith("/#")
-        ? "/"
-        : pathnameOnly === "/"
-          ? "/"
-          : pathnameOnly;
+  // Home + in-page sections canonicalize to site root (trailing slash form).
+  const isHomeCanonical =
+    route.area === "landing" &&
+    ((route.page ?? "home") === "home" || path.startsWith("/#"));
 
-  const canonicalUrl =
-    canonicalPath === "/" ? SITE.url : `${SITE.url}${canonicalPath}`;
+  const canonicalUrl = isHomeCanonical
+    ? `${SITE.url}/`
+    : canonicalUrlForPath(pathnameOnly, SITE.url);
 
   return {
     title,
@@ -226,12 +239,12 @@ function getBreadcrumbJsonLd(route: Route) {
   if (route.area === "app") {
     items.push({
       name: "App",
-      item: `${SITE.url}/app`,
+      item: `${SITE.url}/app/`,
     });
     if (route.tab && route.tab !== "library") {
       items.push({
         name: APP_TAB_LABELS[route.tab] ?? route.tab,
-        item: `${SITE.url}/app/${route.tab}`,
+        item: `${SITE.url}/app/${route.tab}/`,
       });
     }
   } else {
@@ -242,6 +255,13 @@ function getBreadcrumbJsonLd(route: Route) {
         name: meta?.title ?? page,
         item: `${SITE.url}${pathForLandingPage(page)}`,
       });
+      if (page === "learn" && route.section) {
+        const article = getArticle(route.section);
+        items.push({
+          name: article?.title ?? route.section,
+          item: `${SITE.url}${pathForLandingPage("learn", route.section)}`,
+        });
+      }
     }
   }
 
@@ -363,8 +383,13 @@ export function applySeoMetadata(route: Route) {
   upsertMetaByName("author", SITE.name);
   upsertMetaByName("theme-color", "#2f6b43");
 
+  const article =
+    route.area === "landing" && route.page === "learn" && route.section
+      ? getArticle(route.section)
+      : undefined;
+
   // Open Graph
-  upsertMetaByProperty("og:type", "website");
+  upsertMetaByProperty("og:type", article ? "article" : "website");
   upsertMetaByProperty("og:site_name", SITE.name);
   upsertMetaByProperty("og:locale", "en_US");
   upsertMetaByProperty("og:title", meta.title);
@@ -376,6 +401,10 @@ export function applySeoMetadata(route: Route) {
   upsertMetaByProperty("og:image:width", String(meta.imageWidth));
   upsertMetaByProperty("og:image:height", String(meta.imageHeight));
   upsertMetaByProperty("og:image:alt", meta.title);
+  if (article) {
+    upsertMetaByProperty("article:published_time", `${article.date}T00:00:00Z`);
+    upsertMetaByProperty("article:author", SITE.name);
+  }
 
   // Twitter / X — JPEG OG images score better than SVG in most crawlers
   upsertMetaByName("twitter:card", "summary_large_image");
@@ -406,5 +435,26 @@ export function applySeoMetadata(route: Route) {
     injectJsonLd(faqSchema, "seo-faq");
   } else {
     removeJsonLd("seo-faq");
+  }
+
+  if (article) {
+    injectJsonLd(
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: article.title,
+        description: article.description,
+        datePublished: article.date,
+        dateModified: article.date,
+        author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+        publisher: { "@id": `${SITE.url}/#organization` },
+        mainEntityOfPage: meta.canonicalUrl,
+        image: meta.imageUrl,
+        keywords: article.tags.join(", "),
+      },
+      "seo-article"
+    );
+  } else {
+    removeJsonLd("seo-article");
   }
 }
