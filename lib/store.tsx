@@ -260,7 +260,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const enterApp = useCallback(() => go({ area: "app", tab: "library" }), [go]);
+  // First-run lands in Playground so demo users see value in <30s
+  const enterApp = useCallback(() => go({ area: "app", tab: "playground" }), [go]);
 
   const signIn = useCallback(async (email: string) => {
     const { supabase } = await import("./supabase");
@@ -270,7 +271,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: "https://genomeai.space/app" },
+      options: { emailRedirectTo: "https://genomeai.space/app/playground/" },
     });
 
     if (error) {
@@ -285,7 +286,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const name = `Demo ${Math.floor(Math.random() * 9000) + 1000}`;
     const email = `demo+${Date.now()}@local`;
     setState((s) => ({ ...s, user: { name, email } }));
-    const next: Route = { area: "app", tab: "library", page: "home", auth: null };
+    // Prefer Engineer preset if present for a strong first impression
+    const engineer = stateRef.current.genomes.find((g) => /engineer/i.test(g.name));
+    const next: Route = {
+      area: "app",
+      tab: "playground",
+      page: "home",
+      auth: null,
+      genomeId: engineer?.id,
+    };
     setRoute(next);
     syncHistory(next, "push");
   }, []);

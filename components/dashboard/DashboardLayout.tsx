@@ -83,9 +83,10 @@ export function DashboardLayout({
   actions?: ReactNode;
   children: ReactNode;
 }) {
-  const { route, go, user, signOut, genomes } = useStore();
+  const { route, go, user, signOut, genomes, openAuth } = useStore();
   const { theme, toggle } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isDemo = Boolean(user?.email?.includes("@local") || user?.name?.startsWith("Demo"));
 
   const SideContent = (
     <div className="flex h-full flex-col">
@@ -142,6 +143,17 @@ export function DashboardLayout({
           </div>
         </div>
 
+        {isDemo && (
+          <button
+            type="button"
+            onClick={() => openAuth("request")}
+            className="w-full rounded-xl border border-moss/30 bg-mint/30 px-3 py-2 text-left transition hover:bg-mint/50"
+          >
+            <div className="text-[11px] font-bold uppercase tracking-wider text-moss">Demo mode</div>
+            <div className="mt-0.5 text-[12px] font-medium text-forest">Join waitlist →</div>
+          </button>
+        )}
+
         <div className="flex items-center gap-2.5 rounded-xl border border-sand bg-paper px-3 py-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-moss text-[13px] font-bold text-paper">
             {(user?.name || "G").charAt(0).toUpperCase()}
@@ -150,11 +162,13 @@ export function DashboardLayout({
             <div className="truncate text-[12.5px] font-semibold text-forest">
               {user?.name || "Engineer"}
             </div>
-            <div className="truncate text-[11px] text-mist">{user?.email}</div>
+            <div className="truncate text-[11px] text-mist">
+              {isDemo ? "Local demo session" : user?.email}
+            </div>
           </div>
           <button
             onClick={signOut}
-            title="Sign out"
+            title="Exit demo"
             className="rounded-lg p-1.5 text-mist hover:bg-fog hover:text-clay"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
