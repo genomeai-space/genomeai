@@ -92,13 +92,20 @@ function RouteFallback() {
 }
 
 function Router() {
-  const { route, user } = useStore();
+  const { route, user, startDemo } = useStore();
 
   // analytics + SEO whenever the route changes
   useEffect(() => {
     pageview(routeToPath(route).split("#")[0] || "/");
     applySeoMetadata(route);
   }, [route]);
+
+  // App without a session → start local demo automatically (no sign-in modal)
+  useEffect(() => {
+    if (route.area === "app" && !user) {
+      startDemo();
+    }
+  }, [route.area, user, startDemo]);
 
   // Unknown learn slug → 404
   if (
@@ -119,13 +126,12 @@ function Router() {
     );
   }
 
-  // guard: app area requires a (mock) signed-in user
+  // Brief moment while demo session is created
   if (route.area === "app" && !user) {
     return (
-      <>
-        <Landing />
-        <AuthModal />
-      </>
+      <div className="flex min-h-screen items-center justify-center bg-cream text-[13px] text-stone">
+        Opening demo…
+      </div>
     );
   }
 

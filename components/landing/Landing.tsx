@@ -9,7 +9,7 @@ import { WhyDNA, CTA, Footer } from "./LandingSections";
 import { BenchmarkShowcase } from "./BenchmarkShowcase";
 
 export function Landing() {
-  const { openAuth } = useStore();
+  const { openAuth, startDemo } = useStore();
 
   const playScroll = () =>
     document.getElementById("playground")?.scrollIntoView({ behavior: "smooth" });
@@ -18,7 +18,7 @@ export function Landing() {
     <div className="min-h-screen">
       <Navbar />
       <main>
-        <Hero onEnter={() => openAuth("request")} onPlay={playScroll} />
+        <Hero onEnter={() => startDemo()} onPlay={playScroll} onWaitlist={() => openAuth("request")} />
         <WhatIsGenome />
         <CompilerDiagram />
         <PlaygroundPreview />
