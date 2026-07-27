@@ -1,0 +1,23 @@
+# Genome AI
+> Engineer AI behavior with Digital DNA — structured, versioned, measurable genomes instead of prompt-only design.
+
+Genome AI is a web product for designing, benchmarking, and versioning AI behavior profiles (genomes) composed of tunable genes.
+
+## Site
+- Home: https://genomeai.space/
+- Learn (guides): https://genomeai.space/learn/
+- Gene Catalog: https://genomeai.space/catalog/
+- Pricing: https://genomeai.space/pricing/
+- FAQ: https://genomeai.space/faq/
+- About: https://genomeai.space/about/
+- Contact: https://genomeai.space/contact/
+
+## Key guides
+- What is Digital DNA?: https://genomeai.space/learn/what-is-digital-dna/
+- Genome vs prompt engineering: https://genomeai.space/learn/genome-vs-prompt-engineering/
+- How the Genome Engine works: https://genomeai.space/learn/how-the-genome-engine-works/
+- Benchmarking AI behavior: https://genomeai.space/learn/benchmarking-ai-behavior/
+
+## Optional
+- GitHub: https://github.com/GenomeAI-space/genomeai
+- X/Twitter: https://x.com/genomeai
