@@ -47,7 +47,8 @@ export type LandingPage =
   | "screenshots"
   | "notfound";
 
-export type AuthIntent = null | "signin" | "request";
+/** Waitlist / early-access form only — demo entry skips the modal. */
+export type AuthIntent = null | "request";
 
 export interface Route {
   area: "landing" | "app";
@@ -99,8 +100,10 @@ interface StoreValue {
   enterApp: () => void;
 
   user: User | null;
+  /** Optional email OTP for real accounts (not used as primary CTA). */
   signIn: (email: string) => Promise<void>;
-  signInGuest: () => void;
+  /** Instant local demo session — primary product entry. */
+  startDemo: () => void;
   signOut: () => void;
 
   genomes: Genome[];
@@ -259,11 +262,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     // We no longer collect a name at sign-in; store an empty name and the email.
     setState((s) => ({ ...s, user: { name: "", email } }));
   }, []);
-  const signInGuest = useCallback(() => {
-    const name = `Guest ${Math.floor(Math.random() * 9000) + 1000}`;
-    const email = `guest+${Date.now()}@local`;
+  const startDemo = useCallback(() => {
+    const name = `Demo ${Math.floor(Math.random() * 9000) + 1000}`;
+    const email = `demo+${Date.now()}@local`;
     setState((s) => ({ ...s, user: { name, email } }));
-    const next: Route = { area: "app", tab: "library", page: "home" };
+    const next: Route = { area: "app", tab: "library", page: "home", auth: null };
     setRoute(next);
     syncHistory(next, "push");
   }, []);
@@ -411,7 +414,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       enterApp,
       user: state.user,
       signIn,
-      signInGuest,
+      startDemo,
       signOut,
       genomes,
       getGenome,
@@ -423,7 +426,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       restoreVersion,
       setGenes,
     }),
-    [route, go, goPage, openAuth, closeAuth, navigateLanding, enterApp, state.user, genomes, getGenome, createGenome, updateGenome, duplicateGenome, deleteGenome, toggleStar, restoreVersion, setGenes, signIn, signOut]
+    [route, go, goPage, openAuth, closeAuth, navigateLanding, enterApp, state.user, genomes, getGenome, createGenome, updateGenome, duplicateGenome, deleteGenome, toggleStar, restoreVersion, setGenes, signIn, startDemo, signOut]
   );
 
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/primitives";
 import { cn } from "@/utils/cn";
 
 export function Navbar() {
-  const { openAuth, goPage, navigateLanding, route } = useStore();
+  const { openAuth, goPage, navigateLanding, route, startDemo } = useStore();
   const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -113,11 +113,16 @@ export function Navbar() {
               </svg>
             )}
           </button>
-          <Button variant="ghost" size="sm" onClick={() => openAuth("signin")} className="hidden sm:inline-flex">
-            Sign in
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openAuth("request")}
+            className="hidden sm:inline-flex"
+          >
+            Join waitlist
           </Button>
-          <Button size="sm" onClick={() => openAuth("request")}>
-            Request access
+          <Button size="sm" onClick={() => startDemo()}>
+            Try demo
           </Button>
           <button
             className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-sand text-forest md:hidden"
@@ -166,19 +171,19 @@ export function Navbar() {
               size="sm"
               onClick={() => {
                 setOpen(false);
-                openAuth("signin");
+                openAuth("request");
               }}
             >
-              Sign in
+              Join waitlist
             </Button>
             <Button
               size="sm"
               onClick={() => {
                 setOpen(false);
-                openAuth("request");
+                startDemo();
               }}
             >
-              Request access
+              Try demo
             </Button>
           </div>
         </div>

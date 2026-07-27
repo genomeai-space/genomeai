@@ -6,7 +6,7 @@ import { Reveal } from "@/components/ui/primitives";
 import { cn } from "@/utils/cn";
 
 export function FAQ() {
-  const { goPage, openAuth } = useStore();
+  const { goPage, openAuth, startDemo } = useStore();
   const [open, setOpen] = useState<number | null>(0);
   const groups = [...new Set(FAQS.map((f) => f.group))];
 
@@ -113,10 +113,16 @@ export function FAQ() {
                 Back to home
               </a>
               <button
-                onClick={() => openAuth("request")}
+                onClick={() => startDemo()}
                 className="rounded-lg bg-moss px-3 py-2 text-[12px] font-medium text-paper hover:bg-forest-700"
               >
-                Request access
+                Try demo
+              </button>
+              <button
+                onClick={() => openAuth("request")}
+                className="rounded-lg border border-sand bg-paper px-3 py-2 text-[12px] font-medium text-forest hover:border-moss"
+              >
+                Join waitlist
               </button>
             </div>
           </div>

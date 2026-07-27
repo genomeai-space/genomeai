@@ -175,7 +175,7 @@ export function WhyDNA() {
 }
 
 export function CTA() {
-  const { openAuth } = useStore();
+  const { openAuth, startDemo } = useStore();
   return (
     <section className="py-20">
       <div className="mx-auto max-w-6xl px-5">
@@ -195,17 +195,17 @@ export function CTA() {
                 <span className="text-spring">genome engineering.</span>
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-lg text-mint">
-                We're inviting builders who want to engineer AI behavior — not just
-                write prompts. Join the beta and build your first genome.
+                Open the full demo in one click — DNA library, editor, playground, and
+                benchmarks. No account required.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Button
                   size="lg"
                   variant="secondary"
-                  onClick={() => openAuth("request")}
+                  onClick={() => startDemo()}
                   className="bg-paper text-forest hover:bg-mint"
                 >
-                  Request early access
+                  Try demo
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path d="M5 12h14M13 6l6 6-6 6" />
                   </svg>
@@ -213,14 +213,14 @@ export function CTA() {
                 <Button
                   size="lg"
                   variant="ghost"
-                  onClick={() => openAuth("signin")}
+                  onClick={() => openAuth("request")}
                   className="text-mint hover:text-spring hover:bg-spring/10"
                 >
-                  Sign in
+                  Join waitlist
                 </Button>
               </div>
               <p className="mt-4 text-[12px] text-spring/70">
-                Free Beta · No credit card required
+                Free Beta · Local demo · No credit card
               </p>
             </div>
           </div>
@@ -231,7 +231,7 @@ export function CTA() {
 }
 
 export function Footer() {
-  const { goPage, openAuth, navigateLanding, go } = useStore();
+  const { goPage, openAuth, navigateLanding, go, startDemo } = useStore();
 
   const linkCls =
     "text-[13px] text-stone transition-colors hover:text-moss text-left";
@@ -330,8 +330,13 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <button type="button" className={linkCls} onClick={() => startDemo()}>
+                  Try demo
+                </button>
+              </li>
+              <li>
                 <button type="button" className={linkCls} onClick={() => openAuth("request")}>
-                  Request access
+                  Join waitlist
                 </button>
               </li>
             </ul>
@@ -456,10 +461,10 @@ export function Footer() {
             </ul>
             <div className="mt-5">
               <button
-                onClick={() => openAuth("request")}
+                onClick={() => startDemo()}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-moss px-3 py-2 text-[12px] font-semibold text-paper transition-colors hover:bg-forest-700"
               >
-                Join the beta
+                Try demo
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>

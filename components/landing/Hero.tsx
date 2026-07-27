@@ -6,7 +6,15 @@ import { Button, Eyebrow } from "@/components/ui/primitives";
 const preset = PRESETS[0]; // Engineer DNA
 const genes = normalizeGenes(preset.genes);
 
-export function Hero({ onEnter, onPlay }: { onEnter: () => void; onPlay: () => void }) {
+export function Hero({
+  onEnter,
+  onPlay,
+  onWaitlist,
+}: {
+  onEnter: () => void;
+  onPlay: () => void;
+  onWaitlist?: () => void;
+}) {
   return (
     <section id="top" className="relative overflow-hidden pt-28 pb-16 sm:pt-32 lg:pt-36">
       {/* backdrop */}
@@ -55,15 +63,24 @@ export function Hero({ onEnter, onPlay }: { onEnter: () => void; onPlay: () => v
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button size="lg" onClick={onPlay}>
-              Try the live playground
+            <Button size="lg" onClick={onEnter}>
+              Try demo
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </Button>
-            <Button size="lg" variant="secondary" onClick={onEnter}>
-              Request early access
+            <Button size="lg" variant="secondary" onClick={onPlay}>
+              Preview on this page
             </Button>
+            {onWaitlist && (
+              <button
+                type="button"
+                onClick={onWaitlist}
+                className="text-sm font-medium text-moss underline-offset-4 hover:underline"
+              >
+                Join waitlist
+              </button>
+            )}
           </div>
 
           <div className="mt-6">
