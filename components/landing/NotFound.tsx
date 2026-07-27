@@ -33,12 +33,26 @@ export function NotFound() {
       </p>
 
       <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-        <Button size="lg" onClick={() => goPage("home")}>
-          Back to home
-        </Button>
-        <Button size="lg" variant="secondary" onClick={() => goPage("catalog")}>
-          Browse genes
-        </Button>
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            goPage("home");
+          }}
+        >
+          <Button size="lg">Back to home</Button>
+        </a>
+        <a
+          href="/catalog"
+          onClick={(e) => {
+            e.preventDefault();
+            goPage("catalog");
+          }}
+        >
+          <Button size="lg" variant="secondary">
+            Browse genes
+          </Button>
+        </a>
       </div>
     </section>
   );

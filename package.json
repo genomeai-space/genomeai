@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/seo-static-paths.mjs",
     "preview": "vite preview",
-    "deploy": "npm run build"
+    "deploy": "npm run build",
+    "seo:paths": "node scripts/seo-static-paths.mjs"
   },
   "homepage": "https://genomeai.space",
   "dependencies": {

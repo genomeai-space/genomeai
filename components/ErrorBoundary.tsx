@@ -35,15 +35,22 @@ export class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-cream px-5 text-center">
         <div className="text-forest">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          {/* Same HelixMark geometry as BrandLogo */}
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <defs>
-              <mask id="err-cut1"><rect width="24" height="24" fill="white" /><path d="M 16 3 C 16 8, 8 8, 8 12" stroke="black" strokeWidth="5.5" /></mask>
-              <mask id="err-cut2"><rect width="24" height="24" fill="white" /><path d="M 8 12 C 8 16, 16 16, 16 21" stroke="black" strokeWidth="5.5" /></mask>
+              <mask id="err-helix-cut-top">
+                <rect width="24" height="24" fill="white" stroke="none" />
+                <path d="M 17 2 C 17 7, 7 7, 7 12" stroke="black" strokeWidth="7" fill="none" />
+              </mask>
+              <mask id="err-helix-cut-bot">
+                <rect width="24" height="24" fill="white" stroke="none" />
+                <path d="M 17 12 C 17 17, 7 17, 7 22" stroke="black" strokeWidth="7" fill="none" />
+              </mask>
             </defs>
-            <path d="M 8 3 C 8 8, 16 8, 16 12" mask="url(#err-cut1)" />
-            <path d="M 16 12 C 16 16, 8 16, 8 21" />
-            <path d="M 16 3 C 16 8, 8 8, 8 12" />
-            <path d="M 8 12 C 8 16, 16 16, 16 21" mask="url(#err-cut2)" />
+            <path d="M 7 2 C 7 7, 17 7, 17 12" mask="url(#err-helix-cut-top)" />
+            <path d="M 7 12 C 7 17, 17 17, 17 22" mask="url(#err-helix-cut-bot)" />
+            <path d="M 17 2 C 17 7, 7 7, 7 12" />
+            <path d="M 17 12 C 17 17, 7 17, 7 22" />
           </svg>
         </div>
         <div>

@@ -68,13 +68,13 @@ export function Hero({ onEnter, onPlay }: { onEnter: () => void; onPlay: () => v
 
           <div className="mt-6">
             <a
-              href="https://orynth.dev/projects/genomeai"
+              href="https://orynth.dev/projects/genomeai-7078"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               className="inline-flex rounded-full border border-sand bg-paper/80 p-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <img
-                src="https://orynth.dev/api/badge/genomeai?theme=light&style=default"
+                src="https://orynth.dev/api/badge/genomeai-7078?theme=light&style=default"
                 alt="Featured on Orynth"
                 width="260"
                 height="80"
