@@ -1,0 +1,14 @@
+# Supabase local / linked project config (minimal).
+# Link with: supabase link --project-ref anwwrkajurbwkczivzmu
+
+[project]
+id = "anwwrkajurbwkczivzmu"
+
+[api]
+enabled = true
+
+[db]
+major_version = 15
+
+[functions.waitlist]
+verify_jwt = false

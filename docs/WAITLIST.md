@@ -1,83 +1,85 @@
-# Waitlist backend setup
+# Waitlist + Supabase setup
 
-The app submits waitlist forms via `lib/waitlist.ts` using the **first available** provider:
+## Architecture
 
-1. **`VITE_WAITLIST_ENDPOINT`** — any HTTPS webhook that accepts JSON POST  
-2. **Supabase** table `waitlist` (if `VITE_SUPABASE_*` are set)  
-3. **FormSubmit.co** → emails `contact@genomeai.space` (zero extra infra)
+| Layer | Role |
+|-------|------|
+| **Browser** (`lib/waitlist.ts`) | Calls Edge Function → webhook → table insert → FormSubmit |
+| **Edge Function** `waitlist` | `@supabase/server` with `auth: 'publishable'` |
+| **Table** `public.waitlist` | Stores leads; anon can insert, not select |
 
----
+## 1. Create the table
 
-## Option A — Supabase (recommended)
-
-In the Supabase SQL editor:
-
-```sql
-create table if not exists public.waitlist (
-  id uuid primary key default gen_random_uuid(),
-  created_at timestamptz not null default now(),
-  name text not null,
-  email text not null,
-  org text,
-  building text,
-  current_method text,
-  tier text,
-  source text default 'web',
-  user_agent text
-);
-
-create unique index if not exists waitlist_email_uidx on public.waitlist (lower(email));
-
-alter table public.waitlist enable row level security;
-
--- Allow anonymous inserts from the public site (anon key)
-create policy "anon can insert waitlist"
-  on public.waitlist
-  for insert
-  to anon
-  with check (true);
-
--- No public reads
-create policy "no public select"
-  on public.waitlist
-  for select
-  to anon
-  using (false);
-```
-
-Env (already used for auth):
+In Supabase SQL editor (or `supabase db push`):
 
 ```bash
-VITE_SUPABASE_URL=https://xxxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJ...
+# from repo root, after supabase link
+supabase db push
 ```
 
-CI: set the same secrets on GitHub Actions so Pages builds include them.
+Or paste `supabase/migrations/20260727120000_waitlist.sql`.
 
----
+## 2. Browser env
 
-## Option B — Formspree / custom webhook
+`.env.local` (gitignored):
 
 ```bash
-VITE_WAITLIST_ENDPOINT=https://formspree.io/f/your_id
+VITE_SUPABASE_URL=https://anwwrkajurbwkczivzmu.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+VITE_SUPABASE_ANON_KEY=sb_publishable_...   # same value is fine
 ```
 
-Body is JSON: `name`, `email`, `org`, `building`, `currentMethod`, `tier`, `source`, `submittedAt`.
+GitHub Actions secrets for Pages:
 
----
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY` (use publishable key)
+- optional `VITE_WAITLIST_ENDPOINT`
 
-## Option C — FormSubmit (default fallback)
+**Never** put `SUPABASE_SECRET_KEY` in `VITE_*` or the frontend.
 
-If neither A nor B is configured, the client posts to FormSubmit for `SITE.email`.  
-**First submission** requires confirming the inbox link from FormSubmit.
-
----
-
-## Local test
+## 3. Deploy Edge Function
 
 ```bash
-cp .env.example .env.local
-# fill Supabase or WAITLIST_ENDPOINT
+# once
+npx supabase login
+npx supabase link --project-ref anwwrkajurbwkczivzmu
+
+# deploy
+npx supabase functions deploy waitlist --project-ref anwwrkajurbwkczivzmu
+```
+
+Hosted functions get `SUPABASE_URL`, keys, and JWKS automatically.
+
+Local serve:
+
+```bash
+npx supabase functions serve waitlist --env-file .env.local
+```
+
+## 4. `@supabase/server`
+
+Used **only** in Edge Functions:
+
+```ts
+import { withSupabase } from "npm:@supabase/server@1";
+```
+
+The repo also lists `@supabase/server` in `package.json` for local tooling/docs.  
+Optional AI skill: `npx skills add supabase/server`.
+
+## 5. Test
+
+```bash
 npm run dev
-# open Join waitlist → submit → check Supabase table or inbox
+# Join waitlist → submit → check Table Editor → waitlist
+```
+
+Or:
+
+```bash
+curl -X POST "$VITE_SUPABASE_URL/functions/v1/waitlist" \
+  -H "apikey: $VITE_SUPABASE_PUBLISHABLE_KEY" \
+  -H "Authorization: Bearer $VITE_SUPABASE_PUBLISHABLE_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test","email":"test@example.com","tier":"explorer"}'
 ```

@@ -30,12 +30,13 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Supabase (auth + waitlist table) - set in repository Secrets
+          # Supabase browser keys (publishable/anon — never secret key)
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          # Optional: analytics endpoint (leave unset to disable analytics)
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          # Optional: analytics endpoint
           VITE_ANALYTICS_ENDPOINT: ${{ secrets.VITE_ANALYTICS_ENDPOINT }}
-          # Optional: waitlist webhook (Formspree etc.) — see docs/WAITLIST.md
+          # Optional: waitlist webhook — see docs/WAITLIST.md
           VITE_WAITLIST_ENDPOINT: ${{ secrets.VITE_WAITLIST_ENDPOINT }}
 
       - name: Deploy to GitHub Pages
