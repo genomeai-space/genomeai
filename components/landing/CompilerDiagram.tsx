@@ -90,11 +90,12 @@ function Connector({ delay }: { delay: number }) {
   );
 }
 
-export function CompilerDiagram() {
+export function CompilerDiagram({ hideHeader = false }: { hideHeader?: boolean }) {
   return (
-    <section id="compiler" className="relative py-24">
+    <section id="compiler" className={hideHeader ? "relative py-12" : "relative py-24"}>
       <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-25" />
       <div className="mx-auto max-w-7xl px-5">
+{!hideHeader && (
         <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow>How a Genome compiles</Eyebrow>
           <h2 className="mt-5 font-display text-4xl font-bold tracking-tight text-forest sm:text-5xl text-balance">
@@ -105,6 +106,7 @@ export function CompilerDiagram() {
             exact config the model runs. No behavior is left to interpretation.
           </p>
         </Reveal>
+        )}
 
         <div className="mx-auto mt-14 max-w-xl">
           {STAGES.map((s, i) => (

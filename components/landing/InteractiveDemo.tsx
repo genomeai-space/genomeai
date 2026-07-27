@@ -78,7 +78,7 @@ function LiveExplainPanel({ geneId, value }: { geneId: string; value: number }) 
   );
 }
 
-export function InteractiveDemo() {
+export function InteractiveDemo({ hideHeader = false }: { hideHeader?: boolean }) {
   const [genes, setGenes] = useState<Genes>(() =>
     normalizeGenes({ reasoning: 70, verification: 55, creativity: 60, risk: 40, empathy: 50, precision: 60, planning: 50, memory: 55, verbosity: 55, autonomy: 55 })
   );
@@ -98,12 +98,13 @@ export function InteractiveDemo() {
   const cats: GeneCategory[] = ["cognitive", "creative", "personality"];
 
   return (
-    <section id="editor" className="relative py-24">
+    <section id="editor" className={hideHeader ? "relative py-12" : "relative py-24"}>
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute right-0 top-1/3 h-80 w-80 rounded-full bg-mint/40 blur-3xl" />
         <div className="absolute left-0 bottom-1/4 h-72 w-72 rounded-full bg-spring/20 blur-3xl" />
       </div>
       <div className="mx-auto max-w-7xl px-5">
+{!hideHeader && (
         <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow>The Genome Editor</Eyebrow>
           <h2 className="mt-5 font-display text-4xl font-bold tracking-tight text-forest sm:text-5xl text-balance">
@@ -115,8 +116,9 @@ export function InteractiveDemo() {
             prompt editing, ever.
           </p>
         </Reveal>
+        )}
 
-        <Reveal delay={120} className="mt-12">
+        <Reveal delay={120} className={hideHeader ? "mt-2" : "mt-12"}>
           <div className="overflow-hidden rounded-3xl border border-sand bg-paper shadow-xl shadow-forest/10">
             <div className="grid lg:grid-cols-[320px_1fr]">
               {/* helix + readout */}

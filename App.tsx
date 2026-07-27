@@ -10,7 +10,7 @@ import { routeToPath } from "@/lib/paths";
 import { applySeoMetadata } from "@/lib/seo";
 import { getArticle } from "@/lib/content";
 
-// Landing marketing pages — code-split so home stays lean
+// Marketing pages — code-split
 const FAQ = lazy(() => import("@/components/landing/FAQ").then((m) => ({ default: m.FAQ })));
 const Pricing = lazy(() =>
   import("@/components/landing/Pricing").then((m) => ({ default: m.Pricing }))
@@ -36,8 +36,26 @@ const Screenshots = lazy(() =>
 const Learn = lazy(() =>
   import("@/components/landing/Learn").then((m) => ({ default: m.Learn }))
 );
+const WhatPage = lazy(() =>
+  import("@/components/landing/SectionPages").then((m) => ({ default: m.WhatPage }))
+);
+const CompilerPage = lazy(() =>
+  import("@/components/landing/SectionPages").then((m) => ({ default: m.CompilerPage }))
+);
+const PlaygroundPage = lazy(() =>
+  import("@/components/landing/SectionPages").then((m) => ({ default: m.PlaygroundPage }))
+);
+const EditorPage = lazy(() =>
+  import("@/components/landing/SectionPages").then((m) => ({ default: m.EditorPage }))
+);
+const WhyPage = lazy(() =>
+  import("@/components/landing/SectionPages").then((m) => ({ default: m.WhyPage }))
+);
+const BenchmarkPage = lazy(() =>
+  import("@/components/landing/SectionPages").then((m) => ({ default: m.BenchmarkPage }))
+);
 
-// Dashboard — separate chunk; only loaded after sign-in
+// Dashboard — loaded after demo session
 const Library = lazy(() =>
   import("@/components/dashboard/Library").then((m) => ({ default: m.Library }))
 );
@@ -59,7 +77,14 @@ const VersionHistory = lazy(() =>
   }))
 );
 
+/** Every marketing surface is a standalone page (no homepage hash sections). */
 const STANDALONE_PAGES: Partial<Record<PageId, ComponentType>> = {
+  what: WhatPage,
+  compiler: CompilerPage,
+  playground: PlaygroundPage,
+  editor: EditorPage,
+  why: WhyPage,
+  benchmark: BenchmarkPage,
   faq: FAQ,
   pricing: Pricing,
   catalog: GeneCatalog,
@@ -72,17 +97,6 @@ const STANDALONE_PAGES: Partial<Record<PageId, ComponentType>> = {
   notfound: NotFound,
 };
 
-// section ids that live on the homepage (not standalone routes)
-const HOME_SECTIONS = new Set([
-  "home",
-  "what",
-  "compiler",
-  "playground",
-  "editor",
-  "why",
-  "benchmark",
-]);
-
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center text-[13px] text-stone">
@@ -94,20 +108,17 @@ function RouteFallback() {
 function Router() {
   const { route, user, startDemo } = useStore();
 
-  // analytics + SEO whenever the route changes
   useEffect(() => {
     pageview(routeToPath(route).split("#")[0] || "/");
     applySeoMetadata(route);
   }, [route]);
 
-  // App without a session → start local demo automatically (no sign-in modal)
   useEffect(() => {
     if (route.area === "app" && !user) {
       startDemo();
     }
   }, [route.area, user, startDemo]);
 
-  // Unknown learn slug → 404
   if (
     route.area === "landing" &&
     route.page === "learn" &&
@@ -126,7 +137,6 @@ function Router() {
     );
   }
 
-  // Brief moment while demo session is created
   if (route.area === "app" && !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-cream text-[13px] text-stone">
@@ -138,8 +148,7 @@ function Router() {
   if (route.area === "landing") {
     const page = route.page ?? "home";
 
-    // 404: an unrecognized page id
-    if (!HOME_SECTIONS.has(page) && !(page in STANDALONE_PAGES)) {
+    if (page !== "home" && !(page in STANDALONE_PAGES)) {
       return (
         <div className="min-h-screen">
           <Navbar />
@@ -167,6 +176,7 @@ function Router() {
         </div>
       );
     }
+
     return (
       <>
         <Landing />

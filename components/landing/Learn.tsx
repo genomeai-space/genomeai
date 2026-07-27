@@ -110,10 +110,10 @@ export function Learn() {
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <a
-                href="/#playground"
+                href="/playground/"
                 onClick={(e) => {
                   e.preventDefault();
-                  go({ area: "landing", page: "home", section: "playground" });
+                  goPage("playground");
                 }}
                 className="rounded-lg bg-moss px-4 py-2 text-[13px] font-semibold text-paper hover:bg-forest-700"
               >

@@ -223,20 +223,39 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setRoute((prev) => ({ ...prev, auth: null }));
   }, []);
 
+  /** Navigate to home or a standalone landing page (former hash sections are real routes). */
   const navigateLanding = useCallback((section?: string) => {
+    const standalone = new Set<LandingPage>([
+      "what",
+      "compiler",
+      "playground",
+      "editor",
+      "why",
+      "benchmark",
+      "faq",
+      "pricing",
+      "catalog",
+      "about",
+      "contact",
+      "privacy",
+      "terms",
+      "learn",
+    ]);
+    if (section && standalone.has(section as LandingPage)) {
+      const next: Route = { area: "landing", tab: "library", page: section as LandingPage };
+      setRoute(next);
+      syncHistory(next, "push");
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
     const next: Route = {
       area: "landing",
       tab: "library",
       page: "home",
-      section,
     };
     setRoute(next);
     syncHistory(next, "push");
-    if (section && typeof window !== "undefined") {
-      setTimeout(() => {
-        document.getElementById(section)?.scrollIntoView({ behavior: "smooth" });
-      }, 60);
-    } else if (typeof window !== "undefined") {
+    if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, []);
