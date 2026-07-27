@@ -77,9 +77,20 @@ export function FAQ() {
           ))}
           <div className="mt-8 flex flex-col items-center justify-between gap-3 rounded-xl border border-sand bg-cream/50 px-4 py-4 text-center sm:flex-row sm:text-left">
             <p className="text-[13px] text-stone">
-              Still curious? See{" "}
+              Still curious? Read the{" "}
               <a
-                href="/pricing"
+                href="/learn/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  goPage("learn");
+                }}
+                className="font-semibold text-moss hover:underline"
+              >
+                Learn guides
+              </a>
+              , see{" "}
+              <a
+                href="/pricing/"
                 onClick={(e) => {
                   e.preventDefault();
                   goPage("pricing");
@@ -87,8 +98,8 @@ export function FAQ() {
                 className="font-semibold text-moss hover:underline"
               >
                 plans & features
-              </a>{" "}
-              or try the playground.
+              </a>
+              , or try the playground.
             </p>
             <div className="flex gap-2">
               <a

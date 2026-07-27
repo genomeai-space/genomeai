@@ -43,6 +43,7 @@ export type LandingPage =
   | "contact"
   | "privacy"
   | "terms"
+  | "learn"
   | "screenshots"
   | "notfound";
 
@@ -122,18 +123,20 @@ function readRouteFromLocation(): Route {
   return pathToRoute(window.location.pathname, window.location.hash);
 }
 
+function normalizeHistoryPath(path: string): string {
+  if (!path || path === "/") return "/";
+  const [pathname, hash] = path.split("#");
+  let p = pathname || "/";
+  if (p !== "/" && !p.endsWith("/")) p = `${p}/`;
+  return hash ? `${p}#${hash}` : p;
+}
+
 function syncHistory(next: Route, mode: "push" | "replace" = "push") {
   if (typeof window === "undefined") return;
   const target = routeToPath(next);
   const current = `${window.location.pathname}${window.location.hash}`;
-  // Normalize: `/` vs `` and hash-only home sections
-  const normalizedCurrent =
-    current === "" || current === "/"
-      ? "/"
-      : current.endsWith("/") && current !== "/"
-        ? current.slice(0, -1)
-        : current;
-  const normalizedTarget = target === "" ? "/" : target;
+  const normalizedCurrent = normalizeHistoryPath(current);
+  const normalizedTarget = normalizeHistoryPath(target);
   if (normalizedCurrent === normalizedTarget) return;
 
   const [pathname, hash = ""] = normalizedTarget.split("#");

@@ -27,8 +27,9 @@ export function Navbar() {
     { id: "benchmark", label: "Benchmark", href: "/#benchmark" },
   ];
   const pageLinks: { id: LandingPage; label: string; href: string }[] = [
-    { id: "pricing", label: "Pricing", href: "/pricing" },
-    { id: "faq", label: "FAQ", href: "/faq" },
+    { id: "learn", label: "Learn", href: "/learn/" },
+    { id: "pricing", label: "Pricing", href: "/pricing/" },
+    { id: "faq", label: "FAQ", href: "/faq/" },
   ];
 
   const scrollTo = (id: string) => {

@@ -51,8 +51,8 @@ export const SITE = {
     standard: "https://github.com/GenomeAI-space/genomeai#-the-one-idea",
     changelog: "https://github.com/GenomeAI-space/genomeai/releases",
     roadmap: "https://github.com/GenomeAI-space/genomeai#-roadmap",
-    // Avoid linking a non-existent /blog (Ahrefs broken-page / 404 debt)
-    blog: "https://github.com/GenomeAI-space/genomeai/releases",
+    // First-party learn hub (indexable) — prefer over dead /blog
+    blog: "https://genomeai.space/learn/",
     api: "https://github.com/GenomeAI-space/genomeai",
   },
 } as const;

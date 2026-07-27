@@ -43,7 +43,7 @@ export function NotFound() {
           <Button size="lg">Back to home</Button>
         </a>
         <a
-          href="/catalog"
+          href="/catalog/"
           onClick={(e) => {
             e.preventDefault();
             goPage("catalog");

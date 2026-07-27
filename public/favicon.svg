@@ -1,10 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Genome AI">
-  <!-- Matches BrandLogo / HelixMark (components/ui/dna.tsx) -->
-  <rect width="32" height="32" rx="8" fill="#f4f0e6"/>
+  <!--
+    Brand favicon: solid forest tile + HelixMark geometry (cream stroke).
+    Optimized for 16–32px tabs: high contrast, slightly thicker stroke than UI mark.
+  -->
+  <rect width="32" height="32" rx="8" fill="#122a20"/>
   <g
     fill="none"
-    stroke="#122a20"
-    stroke-width="2.5"
+    stroke="#d7efe0"
+    stroke-width="2.75"
     stroke-linecap="round"
     stroke-linejoin="round"
     transform="translate(4 4)"
@@ -12,14 +15,14 @@
     <defs>
       <mask id="favicon-helix-cut-top">
         <rect width="24" height="24" fill="white" stroke="none"/>
-        <path d="M 17 2 C 17 7, 7 7, 7 12" stroke="black" stroke-width="7" fill="none"/>
+        <path d="M 17 2 C 17 7, 7 7, 7 12" stroke="black" stroke-width="7.5" fill="none"/>
       </mask>
       <mask id="favicon-helix-cut-bot">
         <rect width="24" height="24" fill="white" stroke="none"/>
-        <path d="M 17 12 C 17 17, 7 17, 7 22" stroke="black" stroke-width="7" fill="none"/>
+        <path d="M 17 12 C 17 17, 7 17, 7 22" stroke="black" stroke-width="7.5" fill="none"/>
       </mask>
     </defs>
-    <!-- Bottom layer -->
+    <!-- Bottom layer (masked crossover) -->
     <path d="M 7 2 C 7 7, 17 7, 17 12" mask="url(#favicon-helix-cut-top)"/>
     <path d="M 7 12 C 7 17, 17 17, 17 22" mask="url(#favicon-helix-cut-bot)"/>
     <!-- Top layer -->

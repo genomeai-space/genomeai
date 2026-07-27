@@ -1,29 +1,65 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, type ComponentType } from "react";
 import { StoreProvider, useStore, type LandingPage as PageId } from "@/lib/store";
 import { Landing } from "@/components/landing/Landing";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/LandingSections";
-import { FAQ } from "@/components/landing/FAQ";
-import { Pricing } from "@/components/landing/Pricing";
-import { GeneCatalog } from "@/components/landing/GeneCatalog";
-import { About } from "@/components/landing/About";
-import { Contact } from "@/components/landing/Contact";
-import { Privacy } from "@/components/landing/Privacy";
-import { Terms } from "@/components/landing/Terms";
-import { Screenshots } from "@/components/landing/Screenshots";
 import { NotFound } from "@/components/landing/NotFound";
 import { AuthModal } from "@/components/ui/AuthModal";
 import { pageview } from "@/lib/analytics";
 import { routeToPath } from "@/lib/paths";
 import { applySeoMetadata } from "@/lib/seo";
-import { Library } from "@/components/dashboard/Library";
-import { Editor } from "@/components/dashboard/Editor";
-import { Playground } from "@/components/dashboard/Playground";
-import { Compare } from "@/components/dashboard/Compare";
-import { Benchmark } from "@/components/dashboard/Benchmark";
-import { VersionHistory } from "@/components/dashboard/VersionHistory";
+import { getArticle } from "@/lib/content";
 
-const STANDALONE_PAGES: Partial<Record<PageId, React.ComponentType>> = {
+// Landing marketing pages — code-split so home stays lean
+const FAQ = lazy(() => import("@/components/landing/FAQ").then((m) => ({ default: m.FAQ })));
+const Pricing = lazy(() =>
+  import("@/components/landing/Pricing").then((m) => ({ default: m.Pricing }))
+);
+const GeneCatalog = lazy(() =>
+  import("@/components/landing/GeneCatalog").then((m) => ({ default: m.GeneCatalog }))
+);
+const About = lazy(() =>
+  import("@/components/landing/About").then((m) => ({ default: m.About }))
+);
+const Contact = lazy(() =>
+  import("@/components/landing/Contact").then((m) => ({ default: m.Contact }))
+);
+const Privacy = lazy(() =>
+  import("@/components/landing/Privacy").then((m) => ({ default: m.Privacy }))
+);
+const Terms = lazy(() =>
+  import("@/components/landing/Terms").then((m) => ({ default: m.Terms }))
+);
+const Screenshots = lazy(() =>
+  import("@/components/landing/Screenshots").then((m) => ({ default: m.Screenshots }))
+);
+const Learn = lazy(() =>
+  import("@/components/landing/Learn").then((m) => ({ default: m.Learn }))
+);
+
+// Dashboard — separate chunk; only loaded after sign-in
+const Library = lazy(() =>
+  import("@/components/dashboard/Library").then((m) => ({ default: m.Library }))
+);
+const Editor = lazy(() =>
+  import("@/components/dashboard/Editor").then((m) => ({ default: m.Editor }))
+);
+const Playground = lazy(() =>
+  import("@/components/dashboard/Playground").then((m) => ({ default: m.Playground }))
+);
+const Compare = lazy(() =>
+  import("@/components/dashboard/Compare").then((m) => ({ default: m.Compare }))
+);
+const Benchmark = lazy(() =>
+  import("@/components/dashboard/Benchmark").then((m) => ({ default: m.Benchmark }))
+);
+const VersionHistory = lazy(() =>
+  import("@/components/dashboard/VersionHistory").then((m) => ({
+    default: m.VersionHistory,
+  }))
+);
+
+const STANDALONE_PAGES: Partial<Record<PageId, ComponentType>> = {
   faq: FAQ,
   pricing: Pricing,
   catalog: GeneCatalog,
@@ -31,6 +67,7 @@ const STANDALONE_PAGES: Partial<Record<PageId, React.ComponentType>> = {
   contact: Contact,
   privacy: Privacy,
   terms: Terms,
+  learn: Learn,
   screenshots: Screenshots,
   notfound: NotFound,
 };
@@ -46,6 +83,14 @@ const HOME_SECTIONS = new Set([
   "benchmark",
 ]);
 
+function RouteFallback() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center text-[13px] text-stone">
+      Loading…
+    </div>
+  );
+}
+
 function Router() {
   const { route, user } = useStore();
 
@@ -54,6 +99,25 @@ function Router() {
     pageview(routeToPath(route).split("#")[0] || "/");
     applySeoMetadata(route);
   }, [route]);
+
+  // Unknown learn slug → 404
+  if (
+    route.area === "landing" &&
+    route.page === "learn" &&
+    route.section &&
+    !getArticle(route.section)
+  ) {
+    return (
+      <div className="min-h-screen">
+        <Navbar />
+        <main>
+          <NotFound />
+        </main>
+        <Footer />
+        <AuthModal />
+      </div>
+    );
+  }
 
   // guard: app area requires a (mock) signed-in user
   if (route.area === "app" && !user) {
@@ -88,7 +152,9 @@ function Router() {
         <div className="min-h-screen">
           <Navbar />
           <main>
-            <Standalone />
+            <Suspense fallback={<RouteFallback />}>
+              <Standalone />
+            </Suspense>
           </main>
           <Footer />
           <AuthModal />
@@ -103,22 +169,35 @@ function Router() {
     );
   }
 
+  let AppView: ComponentType = Library;
   switch (route.tab) {
     case "library":
-      return <Library />;
+      AppView = Library;
+      break;
     case "editor":
-      return <Editor />;
+      AppView = Editor;
+      break;
     case "playground":
-      return <Playground />;
+      AppView = Playground;
+      break;
     case "compare":
-      return <Compare />;
+      AppView = Compare;
+      break;
     case "benchmark":
-      return <Benchmark />;
+      AppView = Benchmark;
+      break;
     case "history":
-      return <VersionHistory />;
+      AppView = VersionHistory;
+      break;
     default:
-      return <Library />;
+      AppView = Library;
   }
+
+  return (
+    <Suspense fallback={<RouteFallback />}>
+      <AppView />
+    </Suspense>
+  );
 }
 
 export default function App() {

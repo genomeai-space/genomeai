@@ -231,7 +231,7 @@ export function CTA() {
 }
 
 export function Footer() {
-  const { goPage, openAuth, navigateLanding } = useStore();
+  const { goPage, openAuth, navigateLanding, go } = useStore();
 
   const linkCls =
     "text-[13px] text-stone transition-colors hover:text-moss text-left";
@@ -325,7 +325,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a className={linkCls} href="/pricing" onClick={(e) => { e.preventDefault(); goPage("pricing"); }}>
+                <a className={linkCls} href="/pricing/" onClick={(e) => { e.preventDefault(); goPage("pricing"); }}>
                   Pricing
                 </a>
               </li>
@@ -356,8 +356,18 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a className={linkCls} href="/catalog" onClick={(e) => { e.preventDefault(); goPage("catalog"); }}>
+                <a className={linkCls} href="/catalog/" onClick={(e) => { e.preventDefault(); goPage("catalog"); }}>
                   Gene Catalog
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/learn/" onClick={(e) => { e.preventDefault(); goPage("learn"); }}>
+                  Learn
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/learn/what-is-digital-dna/" onClick={(e) => { e.preventDefault(); go({ area: "landing", page: "learn", section: "what-is-digital-dna" }); }}>
+                  What is Digital DNA?
                 </a>
               </li>
               <li>
@@ -374,12 +384,6 @@ export function Footer() {
                   <ExtIcon />
                 </a>
               </li>
-              <li>
-                <a className={extLinkCls} href={SITE.resources.roadmap} target="_blank" rel="noreferrer noopener">
-                  Roadmap
-                  <ExtIcon />
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -390,28 +394,27 @@ export function Footer() {
             </h4>
             <ul className="mt-3 space-y-2.5">
               <li>
-                <a className={linkCls} href="/about" onClick={(e) => { e.preventDefault(); goPage("about"); }}>
+                <a className={linkCls} href="/about/" onClick={(e) => { e.preventDefault(); goPage("about"); }}>
                   About
                 </a>
               </li>
               <li>
-                <a className={extLinkCls} href={SITE.resources.changelog} target="_blank" rel="noreferrer noopener">
-                  Updates
-                  <ExtIcon />
+                <a className={linkCls} href="/learn/genome-vs-prompt-engineering/" onClick={(e) => { e.preventDefault(); go({ area: "landing", page: "learn", section: "genome-vs-prompt-engineering" }); }}>
+                  Genomes vs prompts
                 </a>
               </li>
               <li>
-                <a className={linkCls} href="/contact" onClick={(e) => { e.preventDefault(); goPage("contact"); }}>
+                <a className={linkCls} href="/contact/" onClick={(e) => { e.preventDefault(); goPage("contact"); }}>
                   Contact
                 </a>
               </li>
               <li>
-                <a className={linkCls} href="/privacy" onClick={(e) => { e.preventDefault(); goPage("privacy"); }}>
+                <a className={linkCls} href="/privacy/" onClick={(e) => { e.preventDefault(); goPage("privacy"); }}>
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a className={linkCls} href="/terms" onClick={(e) => { e.preventDefault(); goPage("terms"); }}>
+                <a className={linkCls} href="/terms/" onClick={(e) => { e.preventDefault(); goPage("terms"); }}>
                   Terms of Service
                 </a>
               </li>
