@@ -75,10 +75,11 @@ function Mark({ level }: { level: Level }) {
   );
 }
 
-export function WhyDNA() {
+export function WhyDNA({ hideHeader = false }: { hideHeader?: boolean }) {
   return (
-    <section id="why" className="py-24">
+    <section id="why" className={hideHeader ? "py-12" : "py-24"}>
       <div className="mx-auto max-w-6xl px-5">
+{!hideHeader && (
         <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow>A new category</Eyebrow>
           <h2 className="mt-5 font-display text-4xl font-bold tracking-tight text-forest sm:text-5xl text-balance">
@@ -93,8 +94,9 @@ export function WhyDNA() {
             engineered — structured, measurable, and reusable across any of them.
           </p>
         </Reveal>
+        )}
 
-        <Reveal delay={120} className="mt-12 overflow-hidden rounded-3xl border border-sand bg-paper shadow-xl shadow-forest/10">
+        <Reveal delay={120} className={(hideHeader ? "mt-2 " : "mt-12 ") + "overflow-hidden rounded-3xl border border-sand bg-paper shadow-xl shadow-forest/10"}>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[680px] border-collapse">
               <thead>
@@ -231,7 +233,7 @@ export function CTA() {
 }
 
 export function Footer() {
-  const { goPage, openAuth, navigateLanding, go, startDemo } = useStore();
+  const { goPage, openAuth, go, startDemo } = useStore();
 
   const linkCls =
     "text-[13px] text-stone transition-colors hover:text-moss text-left";
@@ -310,18 +312,33 @@ export function Footer() {
             </h4>
             <ul className="mt-3 space-y-2.5">
               <li>
-                <a className={linkCls} href="/#what" onClick={(e) => { e.preventDefault(); navigateLanding("what"); }}>
+                <a className={linkCls} href="/what/" onClick={(e) => { e.preventDefault(); goPage("what"); }}>
                   What is a Genome
                 </a>
               </li>
               <li>
-                <a className={linkCls} href="/#playground" onClick={(e) => { e.preventDefault(); navigateLanding("playground"); }}>
+                <a className={linkCls} href="/playground/" onClick={(e) => { e.preventDefault(); goPage("playground"); }}>
                   Playground
                 </a>
               </li>
               <li>
-                <a className={linkCls} href="/#benchmark" onClick={(e) => { e.preventDefault(); navigateLanding("benchmark"); }}>
+                <a className={linkCls} href="/benchmark/" onClick={(e) => { e.preventDefault(); goPage("benchmark"); }}>
                   Benchmark
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/compiler/" onClick={(e) => { e.preventDefault(); goPage("compiler"); }}>
+                  How it compiles
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/editor/" onClick={(e) => { e.preventDefault(); goPage("editor"); }}>
+                  Editor
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/why/" onClick={(e) => { e.preventDefault(); goPage("why"); }}>
+                  vs Platforms
                 </a>
               </li>
               <li>

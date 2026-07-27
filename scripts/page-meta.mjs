@@ -16,6 +16,36 @@ export const PAGE_META = {
       "Genome AI helps teams design, test, benchmark, and version AI behavior with Digital DNA instead of prompt-only engineering.",
     brandInTitle: true,
   },
+  what: {
+    title: "What is a Genome?",
+    description:
+      "Learn how Digital DNA turns AI behavior design into a structured, reusable, and measurable workflow.",
+  },
+  compiler: {
+    title: "The Genome Compiler",
+    description:
+      "See how Genome AI compiles tunable genes into system instructions, memory policy, and tool policy.",
+  },
+  playground: {
+    title: "Try the Playground",
+    description:
+      "Explore genomes interactively and shape AI behavior in real time with Digital DNA.",
+  },
+  editor: {
+    title: "Genome Editor",
+    description:
+      "Refine genes, compare versions, and tune AI behavior with the visual Genome Editor.",
+  },
+  why: {
+    title: "Why Digital DNA Matters",
+    description:
+      "Understand why structured genomes improve reliability, reuse, and observability for AI systems.",
+  },
+  benchmark: {
+    title: "Benchmark AI Behavior",
+    description:
+      "Measure how DNA changes affect reasoning, planning, memory, verification, and more.",
+  },
   pricing: {
     title: "Pricing",
     description:
@@ -130,6 +160,12 @@ export const PAGE_META = {
 };
 
 export const INDEXABLE_PATHS = [
+  "what",
+  "compiler",
+  "playground",
+  "editor",
+  "why",
+  "benchmark",
   "pricing",
   "faq",
   "catalog",

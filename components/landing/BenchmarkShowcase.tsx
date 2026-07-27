@@ -12,13 +12,14 @@ const topReport = top.rep;
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
-export function BenchmarkShowcase() {
+export function BenchmarkShowcase({ hideHeader = false }: { hideHeader?: boolean }) {
   return (
-    <section id="benchmark" className="relative py-24">
+    <section id="benchmark" className={hideHeader ? "relative py-12" : "relative py-24"}>
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-10 h-80 w-[42rem] -translate-x-1/2 rounded-full bg-mint/40 blur-3xl" />
       </div>
       <div className="mx-auto max-w-7xl px-5">
+{!hideHeader && (
         <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow>Benchmark · demonstrated</Eyebrow>
           <h2 className="mt-5 font-display text-4xl font-bold tracking-tight text-forest sm:text-5xl text-balance">
@@ -30,9 +31,10 @@ export function BenchmarkShowcase() {
             measured, ranked, and comparable.
           </p>
         </Reveal>
+        )}
 
         {/* ── Leaderboard: front and center ── */}
-        <Reveal delay={100} className="mt-12">
+        <Reveal delay={100} className={hideHeader ? "mt-2" : "mt-12"}>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((row, i) => {
               const isTop = i === 0;

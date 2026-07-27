@@ -14,7 +14,7 @@ const SAMPLES = [
   "Should our startup take a bridge round or cut burn?",
 ];
 
-export function PlaygroundPreview() {
+export function PlaygroundPreview({ hideHeader = false }: { hideHeader?: boolean }) {
   const [presetIdx, setPresetIdx] = useState(0);
   const [prompt, setPrompt] = useState(SAMPLES[0]);
   const [output, setOutput] = useState<GeneratedOutput | null>(null);
@@ -33,9 +33,10 @@ export function PlaygroundPreview() {
   };
 
   return (
-    <section id="playground" className="relative py-24">
+    <section id="playground" className={hideHeader ? "relative py-12" : "relative py-24"}>
       <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-40" />
       <div className="mx-auto max-w-7xl px-5">
+{!hideHeader && (
         <Reveal className="mx-auto max-w-2xl text-center">
           <Eyebrow>Interactive Playground</Eyebrow>
           <h2 className="mt-5 font-display text-4xl font-bold tracking-tight text-forest sm:text-5xl text-balance">
@@ -46,8 +47,9 @@ export function PlaygroundPreview() {
             response, its reasoning, and its cost.
           </p>
         </Reveal>
+        )}
 
-        <Reveal delay={120} className="mt-12">
+        <Reveal delay={120} className={hideHeader ? "mt-2" : "mt-12"}>
           <div className="overflow-hidden rounded-3xl border border-sand bg-paper shadow-xl shadow-forest/10">
             {/* profile selector */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sand bg-cream/50 px-5 py-3.5">

@@ -199,20 +199,10 @@ export function getSeoMetadata(route: Route) {
       robots = "noindex,follow";
     }
 
-    // Home section hashes still canonicalize to homepage (avoid thin duplicate URLs)
-    if (page !== "home" && path.startsWith("/#")) {
-      const sectionMeta = PAGE_METADATA[page];
-      if (sectionMeta) {
-        title = `${sectionMeta.title} | ${SITE.name}`;
-        description = sectionMeta.description;
-      }
-    }
   }
 
-  // Home + in-page sections canonicalize to site root (trailing slash form).
   const isHomeCanonical =
-    route.area === "landing" &&
-    ((route.page ?? "home") === "home" || path.startsWith("/#"));
+    route.area === "landing" && (route.page ?? "home") === "home";
 
   const canonicalUrl = isHomeCanonical
     ? `${SITE.url}/`

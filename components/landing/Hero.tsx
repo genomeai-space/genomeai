@@ -71,7 +71,7 @@ export function Hero({
               </svg>
             </Button>
             <Button size="lg" variant="secondary" onClick={onPlay} className="w-full justify-center sm:w-auto">
-              Preview on this page
+              Open playground
             </Button>
             {onWaitlist && (
               <button

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/primitives";
 import { cn } from "@/utils/cn";
 
 export function Navbar() {
-  const { openAuth, goPage, navigateLanding, route, startDemo } = useStore();
+  const { openAuth, goPage, route, startDemo } = useStore();
   const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -18,24 +18,20 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = [
-    { id: "what", label: "What is a Genome", href: "/#what" },
-    { id: "compiler", label: "How it compiles", href: "/#compiler" },
-    { id: "playground", label: "Playground", href: "/#playground" },
-    { id: "editor", label: "Editor", href: "/#editor" },
-    { id: "why", label: "vs Platforms", href: "/#why" },
-    { id: "benchmark", label: "Benchmark", href: "/#benchmark" },
+  // All product surfaces are standalone pages
+  const links: { id: LandingPage; label: string; href: string }[] = [
+    { id: "what", label: "What is a Genome", href: "/what/" },
+    { id: "compiler", label: "How it compiles", href: "/compiler/" },
+    { id: "playground", label: "Playground", href: "/playground/" },
+    { id: "editor", label: "Editor", href: "/editor/" },
+    { id: "why", label: "vs Platforms", href: "/why/" },
+    { id: "benchmark", label: "Benchmark", href: "/benchmark/" },
   ];
   const pageLinks: { id: LandingPage; label: string; href: string }[] = [
     { id: "learn", label: "Learn", href: "/learn/" },
     { id: "pricing", label: "Pricing", href: "/pricing/" },
     { id: "faq", label: "FAQ", href: "/faq/" },
   ];
-
-  const scrollTo = (id: string) => {
-    setOpen(false);
-    navigateLanding(id);
-  };
 
   const goToPage = (page: LandingPage) => {
     setOpen(false);
@@ -63,16 +59,19 @@ export function Navbar() {
           <BrandLogo />
         </a>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-0.5 lg:flex" aria-label="Primary">
           {links.map((l) => (
             <a
               key={l.id}
               href={l.href}
               onClick={(e) => {
                 e.preventDefault();
-                scrollTo(l.id);
+                goToPage(l.id);
               }}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-stone transition-colors hover:bg-fog hover:text-forest"
+              className={cn(
+                "rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors hover:bg-fog hover:text-forest xl:px-3 xl:text-sm",
+                route.page === l.id ? "text-forest" : "text-stone"
+              )}
             >
               {l.label}
             </a>
@@ -86,7 +85,7 @@ export function Navbar() {
                 goToPage(l.id);
               }}
               className={cn(
-                "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-fog hover:text-forest",
+                "rounded-lg px-2.5 py-2 text-[13px] font-medium transition-colors hover:bg-fog hover:text-forest xl:px-3 xl:text-sm",
                 route.page === l.id ? "text-forest" : "text-stone"
               )}
             >
@@ -125,7 +124,7 @@ export function Navbar() {
             Try demo
           </Button>
           <button
-            className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-sand text-forest md:hidden"
+            className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-sand text-forest lg:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-label="Menu"
             aria-expanded={open}
@@ -138,21 +137,8 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-sand bg-paper px-5 py-3 md:hidden">
-          {links.map((l) => (
-            <a
-              key={l.id}
-              href={l.href}
-              onClick={(e) => {
-                e.preventDefault();
-                scrollTo(l.id);
-              }}
-              className="block w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-stone hover:bg-fog"
-            >
-              {l.label}
-            </a>
-          ))}
-          {pageLinks.map((l) => (
+        <div className="max-h-[70vh] overflow-y-auto border-t border-sand bg-paper px-5 py-3 lg:hidden">
+          {[...links, ...pageLinks].map((l) => (
             <a
               key={l.id}
               href={l.href}
@@ -160,7 +146,10 @@ export function Navbar() {
                 e.preventDefault();
                 goToPage(l.id);
               }}
-              className="block w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-stone hover:bg-fog"
+              className={cn(
+                "block w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium hover:bg-fog",
+                route.page === l.id ? "text-forest" : "text-stone"
+              )}
             >
               {l.label}
             </a>

@@ -5,6 +5,12 @@ Genome AI is a web product for designing, benchmarking, and versioning AI behavi
 
 ## Site
 - Home: https://genomeai.space/
+- What is a Genome: https://genomeai.space/what/
+- Compiler: https://genomeai.space/compiler/
+- Playground: https://genomeai.space/playground/
+- Editor: https://genomeai.space/editor/
+- vs Platforms: https://genomeai.space/why/
+- Benchmark: https://genomeai.space/benchmark/
 - Learn (guides): https://genomeai.space/learn/
 - Gene Catalog: https://genomeai.space/catalog/
 - Pricing: https://genomeai.space/pricing/

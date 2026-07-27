@@ -40,7 +40,7 @@ const PILLARS = [
 
 export function WhatIsGenome({ hideHeader = false }: { hideHeader?: boolean }) {
   return (
-    <section id="what" className="relative py-24">
+    <section id="what" className={hideHeader ? "relative py-12" : "relative py-24"}>
       <div className="pointer-events-none absolute inset-0 -z-10 bg-grain opacity-40" />
       <div className="mx-auto max-w-7xl px-5">
         {!hideHeader && (
