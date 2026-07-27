@@ -16,7 +16,7 @@ export function Hero({
   onWaitlist?: () => void;
 }) {
   return (
-    <section id="top" className="relative overflow-hidden pt-28 pb-16 sm:pt-32 lg:pt-36">
+    <section id="top" className="relative overflow-x-clip overflow-y-visible pt-24 pb-14 sm:pt-32 sm:pb-16 lg:pt-36">
       {/* backdrop */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-grain opacity-60" />
@@ -34,15 +34,16 @@ export function Hero({
         {/* copy */}
         <div className="animate-fade-up">
           <Eyebrow>Engineer behavior, not prompts</Eyebrow>
-          <h1 className="mt-5 font-display text-[2.6rem] font-bold leading-[1.04] tracking-tight text-forest text-balance sm:text-6xl">
+          <h1 className="mt-5 font-display text-[2.15rem] font-bold leading-[1.08] tracking-tight text-forest text-balance sm:text-5xl lg:text-6xl">
             Build AI agents by engineering their{" "}
-            <span className="relative whitespace-nowrap">
+            <span className="relative inline whitespace-nowrap">
               <span className="relative z-10 text-moss">Genome</span>
               <svg
-                className="absolute -bottom-2 left-0 z-0 w-full"
+                className="absolute -bottom-1.5 left-0 z-0 w-full sm:-bottom-2"
                 viewBox="0 0 300 16"
                 fill="none"
                 preserveAspectRatio="none"
+                aria-hidden
               >
                 <path
                   d="M3 11c50-8 100-8 148-3s100 6 146-2"
@@ -55,84 +56,90 @@ export function Hero({
             </span>
             .
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-stone sm:mt-6 sm:text-lg">
             Every Genome is a{" "}
             <strong className="font-semibold text-forest">reusable behavioral blueprint</strong>{" "}
             that defines how an AI reasons, plans, verifies, remembers, and
             communicates.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button size="lg" onClick={onEnter}>
+          <div className="mt-7 flex w-full flex-col gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+            <Button size="lg" onClick={onEnter} className="w-full justify-center sm:w-auto">
               Try demo
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </Button>
-            <Button size="lg" variant="secondary" onClick={onPlay}>
+            <Button size="lg" variant="secondary" onClick={onPlay} className="w-full justify-center sm:w-auto">
               Preview on this page
             </Button>
             {onWaitlist && (
               <button
                 type="button"
                 onClick={onWaitlist}
-                className="text-sm font-medium text-moss underline-offset-4 hover:underline"
+                className="px-1 text-center text-sm font-medium text-moss underline-offset-4 hover:underline sm:text-left"
               >
                 Join waitlist
               </button>
             )}
           </div>
 
-          <div className="mt-6">
+          {/* Orynth badge — fluid stand so it never overflows mobile */}
+          <div className="mt-6 w-full max-w-full sm:mt-7">
             <a
               href="https://orynth.dev/projects/genomeai-7078"
               target="_blank"
-              rel="noopener"
-              className="inline-flex rounded-full border border-sand bg-paper/80 p-2 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              rel="noopener noreferrer"
+              className="group inline-flex max-w-full items-center rounded-2xl border border-sand bg-paper/90 p-1.5 shadow-sm transition hover:-translate-y-0.5 hover:border-moss/40 hover:shadow-md sm:rounded-full sm:p-2"
+              aria-label="Featured on Orynth — open project page"
             >
               <img
                 src="https://orynth.dev/api/badge/genomeai-7078?theme=light&style=default"
                 alt="Featured on Orynth"
                 width="260"
                 height="80"
-                className="h-auto w-[220px] sm:w-[260px]"
+                loading="lazy"
+                decoding="async"
+                className="h-auto w-full max-w-[min(100%,240px)] object-contain object-left sm:max-w-[260px]"
               />
             </a>
           </div>
 
-          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-stone">
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-stone sm:mt-9 sm:gap-x-6 sm:text-sm">
             <span className="font-medium text-forest">10 tunable genes</span>
-            <span className="h-4 w-px bg-sand" />
+            <span className="hidden h-4 w-px bg-sand sm:block" aria-hidden />
             <span>Reproducible versions</span>
-            <span className="h-4 w-px bg-sand" />
+            <span className="hidden h-4 w-px bg-sand sm:block" aria-hidden />
             <span>Benchmark scoring</span>
           </div>
         </div>
 
         {/* live genome card */}
-        <div className="relative animate-fade-up [animation-delay:120ms]">
-          <div className="absolute -inset-3 -z-10 rounded-[2rem] bg-gradient-to-br from-mint/60 to-transparent blur-xl" />
-          <div className="overflow-hidden rounded-3xl border border-sand bg-paper shadow-2xl shadow-forest/15">
+        <div className="relative mx-auto w-full max-w-lg animate-fade-up lg:max-w-none [animation-delay:120ms]">
+          <div className="absolute -inset-2 -z-10 rounded-[2rem] bg-gradient-to-br from-mint/60 to-transparent blur-xl sm:-inset-3" />
+          <div className="overflow-hidden rounded-2xl border border-sand bg-paper shadow-2xl shadow-forest/15 sm:rounded-3xl">
             {/* header */}
-            <div className="flex items-center justify-between border-b border-sand bg-gradient-to-r from-forest to-forest-700 px-5 py-3.5">
-              <div className="flex items-center gap-2.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-spring animate-pulse-soft" />
-                <span className="font-display text-sm font-semibold text-paper">
+            <div className="flex items-center justify-between border-b border-sand bg-gradient-to-r from-forest to-forest-700 px-4 py-3 sm:px-5 sm:py-3.5">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-spring animate-pulse-soft" />
+                <span className="truncate font-display text-sm font-semibold text-paper">
                   {preset.name} DNA
                 </span>
               </div>
-              <span className="font-mono text-[11px] text-spring/80">genome · live</span>
+              <span className="shrink-0 font-mono text-[10px] text-spring/80 sm:text-[11px]">
+                genome · live
+              </span>
             </div>
 
-            <div className="grid grid-cols-[auto_1fr] gap-5 p-5">
-              {/* helix */}
-              <div className="flex flex-col items-center">
-                <DNAStrand genes={genes} width={92} height={210} className="animate-floaty" />
+            <div className="grid grid-cols-1 gap-4 p-4 min-[400px]:grid-cols-[auto_1fr] sm:gap-5 sm:p-5">
+              {/* helix — centered on narrow phones */}
+              <div className="flex flex-col items-center justify-center">
+                <DNAStrand genes={genes} width={92} height={210} className="animate-floaty max-h-[180px] w-auto sm:max-h-none" />
                 <SequenceStrip genes={genes} className="mt-1 max-w-[92px] text-center" />
               </div>
 
               {/* genes */}
-              <div className="grid grid-cols-1 gap-2.5">
+              <div className="grid min-w-0 grid-cols-1 gap-2.5">
                 {["reasoning", "verification", "precision", "risk", "creativity", "autonomy"].map(
                   (id) => (
                     <GeneBar key={id} id={id} value={genes[id]} />
@@ -142,10 +149,12 @@ export function Hero({
             </div>
 
             {/* behavior readout */}
-            <div className="border-t border-sand bg-cream/60 px-5 py-3.5">
+            <div className="border-t border-sand bg-cream/60 px-4 py-3 sm:px-5 sm:py-3.5">
               <div className="flex items-start gap-2">
-                <span className="mt-0.5 text-base">🧬</span>
-                <p className="text-[13px] leading-relaxed text-forest">
+                <span className="mt-0.5 text-base" aria-hidden>
+                  🧬
+                </span>
+                <p className="min-w-0 text-[12.5px] leading-relaxed text-forest sm:text-[13px]">
                   <span className="font-semibold">Behavioral readout:</span>{" "}
                   <span style={{ color: geneColor(90) }}>{describeGenome(genes)}</span>
                 </p>
@@ -153,11 +162,11 @@ export function Hero({
             </div>
           </div>
 
-          {/* floating chips */}
-          <div className="absolute -right-3 -top-3 rounded-xl border border-sand bg-paper px-3 py-1.5 text-[11px] font-semibold text-moss shadow-lg">
+          {/* floating chips — stay inside viewport on mobile */}
+          <div className="absolute right-2 top-2 rounded-lg border border-sand bg-paper px-2 py-1 text-[10px] font-semibold text-moss shadow-lg sm:-right-2 sm:-top-3 sm:rounded-xl sm:px-3 sm:py-1.5 sm:text-[11px]">
             ✅ 100% Verification
           </div>
-          <div className="absolute -bottom-3 left-6 rounded-xl border border-sand bg-paper px-3 py-1.5 text-[11px] font-semibold text-stone shadow-lg">
+          <div className="absolute bottom-2 left-3 rounded-lg border border-sand bg-paper px-2 py-1 text-[10px] font-semibold text-stone shadow-lg sm:-bottom-3 sm:left-6 sm:rounded-xl sm:px-3 sm:py-1.5 sm:text-[11px]">
             ⚙️ No prompts edited
           </div>
         </div>
