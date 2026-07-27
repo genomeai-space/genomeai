@@ -1,6 +1,11 @@
 # Genome AI — https://genomeai.space
 User-agent: *
 Allow: /
+
+# App and thin utility surfaces — keep out of the organic index
+Disallow: /app
+Disallow: /app/
 Disallow: /screenshots
+Disallow: /404
 
 Sitemap: https://genomeai.space/sitemap.xml

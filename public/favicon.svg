@@ -1,13 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Genome AI logo">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#183d2b" />
-      <stop offset="100%" stop-color="#4f8f63" />
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="16" fill="#f5efe2" />
-  <path d="M20 16c0 8 10 10 10 20 0 7-8 10-8 16" stroke="url(#g)" stroke-width="5" fill="none" stroke-linecap="round" />
-  <path d="M44 16c0 8-10 10-10 20 0 7 8 10 8 16" stroke="url(#g)" stroke-width="5" fill="none" stroke-linecap="round" />
-  <path d="M20 16c0 8 10 10 10 20 0 7-8 10-8 16" stroke="#122a20" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.2" />
-  <path d="M44 16c0 8-10 10-10 20 0 7 8 10 8 16" stroke="#122a20" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.2" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Genome AI">
+  <!-- Matches BrandLogo / HelixMark (components/ui/dna.tsx) -->
+  <rect width="32" height="32" rx="8" fill="#f4f0e6"/>
+  <g
+    fill="none"
+    stroke="#122a20"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    transform="translate(4 4)"
+  >
+    <defs>
+      <mask id="favicon-helix-cut-top">
+        <rect width="24" height="24" fill="white" stroke="none"/>
+        <path d="M 17 2 C 17 7, 7 7, 7 12" stroke="black" stroke-width="7" fill="none"/>
+      </mask>
+      <mask id="favicon-helix-cut-bot">
+        <rect width="24" height="24" fill="white" stroke="none"/>
+        <path d="M 17 12 C 17 17, 7 17, 7 22" stroke="black" stroke-width="7" fill="none"/>
+      </mask>
+    </defs>
+    <!-- Bottom layer -->
+    <path d="M 7 2 C 7 7, 17 7, 17 12" mask="url(#favicon-helix-cut-top)"/>
+    <path d="M 7 12 C 7 17, 17 17, 17 22" mask="url(#favicon-helix-cut-bot)"/>
+    <!-- Top layer -->
+    <path d="M 17 2 C 17 7, 7 7, 7 12"/>
+    <path d="M 17 12 C 17 17, 7 17, 7 22"/>
+  </g>
 </svg>

@@ -17,6 +17,7 @@ import {
   GENOME_COLORS,
   CATEGORIES,
 } from "./dna";
+import { pathToRoute, routeToPath } from "./paths";
 
 // ── navigation ───────────────────────────────────────────────
 export type DashTab =
@@ -114,11 +115,43 @@ interface StoreValue {
 
 const StoreCtx = createContext<StoreValue | null>(null);
 
+function readRouteFromLocation(): Route {
+  if (typeof window === "undefined") {
+    return { area: "landing", tab: "library", page: "home" };
+  }
+  return pathToRoute(window.location.pathname, window.location.hash);
+}
+
+function syncHistory(next: Route, mode: "push" | "replace" = "push") {
+  if (typeof window === "undefined") return;
+  const target = routeToPath(next);
+  const current = `${window.location.pathname}${window.location.hash}`;
+  // Normalize: `/` vs `` and hash-only home sections
+  const normalizedCurrent =
+    current === "" || current === "/"
+      ? "/"
+      : current.endsWith("/") && current !== "/"
+        ? current.slice(0, -1)
+        : current;
+  const normalizedTarget = target === "" ? "/" : target;
+  if (normalizedCurrent === normalizedTarget) return;
+
+  const [pathname, hash = ""] = normalizedTarget.split("#");
+  const url = hash ? `${pathname || "/"}#${hash}` : pathname || "/";
+  if (mode === "replace") {
+    window.history.replaceState({ route: next }, "", url);
+  } else {
+    window.history.pushState({ route: next }, "", url);
+  }
+}
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<Persisted>(() => load());
-  const [route, setRoute] = useState<Route>({ area: "landing", tab: "library", page: "home" });
+  const [route, setRoute] = useState<Route>(() => readRouteFromLocation());
   const stateRef = useRef(state);
   stateRef.current = state;
+  const routeRef = useRef(route);
+  routeRef.current = route;
 
   // persist
   useEffect(() => {
@@ -129,36 +162,78 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [state]);
 
+  // Browser back/forward + direct loads
+  useEffect(() => {
+    const onPopState = () => {
+      const next = readRouteFromLocation();
+      setRoute((prev) => ({ ...next, auth: prev.auth ?? null }));
+      if (next.section) {
+        setTimeout(() => {
+          document.getElementById(next.section!)?.scrollIntoView({ behavior: "smooth" });
+        }, 60);
+      }
+    };
+    window.addEventListener("popstate", onPopState);
+
+    // Ensure the address bar matches parsed route on first paint (e.g. trailing slash)
+    syncHistory(routeRef.current, "replace");
+
+    // Deep-link into a home section after first mount
+    if (routeRef.current.section) {
+      setTimeout(() => {
+        document.getElementById(routeRef.current.section!)?.scrollIntoView({ behavior: "smooth" });
+      }, 80);
+    }
+
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
   const go = useCallback((r: Partial<Route>) => {
-    setRoute((prev) => ({ ...prev, ...r }));
+    setRoute((prev) => {
+      const next: Route = { ...prev, ...r };
+      // Clearing page when entering app keeps path clean
+      if (next.area === "app") {
+        next.page = "home";
+        next.section = undefined;
+      }
+      syncHistory(next, "push");
+      return next;
+    });
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
 
   const goPage = useCallback((page: LandingPage) => {
-    setRoute({ area: "landing", tab: "library", page });
+    const next: Route = { area: "landing", tab: "library", page };
+    setRoute(next);
+    syncHistory(next, "push");
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
 
   const openAuth = useCallback((intent: AuthIntent) => {
-    setRoute({ area: "landing", tab: "library", auth: intent });
+    // Auth is modal-only — do not pollute the URL or history stack
+    setRoute((prev) => ({ ...prev, auth: intent }));
   }, []);
   const closeAuth = useCallback(() => {
     setRoute((prev) => ({ ...prev, auth: null }));
   }, []);
 
-  const navigateLanding = useCallback(
-    (section?: string) => {
-      setRoute({ area: "landing", tab: "library", section });
-      if (section && typeof window !== "undefined") {
-        setTimeout(() => {
-          document.getElementById(section)?.scrollIntoView({ behavior: "smooth" });
-        }, 60);
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    },
-    []
-  );
+  const navigateLanding = useCallback((section?: string) => {
+    const next: Route = {
+      area: "landing",
+      tab: "library",
+      page: "home",
+      section,
+    };
+    setRoute(next);
+    syncHistory(next, "push");
+    if (section && typeof window !== "undefined") {
+      setTimeout(() => {
+        document.getElementById(section)?.scrollIntoView({ behavior: "smooth" });
+      }, 60);
+    } else if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
 
   const enterApp = useCallback(() => go({ area: "app", tab: "library" }), [go]);
 
@@ -168,7 +243,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       throw new Error("Supabase is not configured.");
     }
 
-    const { data, error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: "https://genomeai.space/app" },
     });
@@ -185,12 +260,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const name = `Guest ${Math.floor(Math.random() * 9000) + 1000}`;
     const email = `guest+${Date.now()}@local`;
     setState((s) => ({ ...s, user: { name, email } }));
-    // navigate into the app after guest sign-in
-    setRoute({ area: "app", tab: "library" });
+    const next: Route = { area: "app", tab: "library", page: "home" };
+    setRoute(next);
+    syncHistory(next, "push");
   }, []);
   const signOut = useCallback(() => {
     setState((s) => ({ ...s, user: null }));
-    setRoute({ area: "landing", tab: "library" });
+    const next: Route = { area: "landing", tab: "library", page: "home" };
+    setRoute(next);
+    syncHistory(next, "push");
   }, []);
 
   const genomes = state.genomes;

@@ -14,6 +14,7 @@ import { Screenshots } from "@/components/landing/Screenshots";
 import { NotFound } from "@/components/landing/NotFound";
 import { AuthModal } from "@/components/ui/AuthModal";
 import { pageview } from "@/lib/analytics";
+import { routeToPath } from "@/lib/paths";
 import { applySeoMetadata } from "@/lib/seo";
 import { Library } from "@/components/dashboard/Library";
 import { Editor } from "@/components/dashboard/Editor";
@@ -48,16 +49,9 @@ const HOME_SECTIONS = new Set([
 function Router() {
   const { route, user } = useStore();
 
-  // analytics: fire a pageview whenever the route changes
+  // analytics + SEO whenever the route changes
   useEffect(() => {
-    const path =
-      route.area === "app"
-        ? `/app/${route.tab}`
-        : `/${route.page && route.page !== "home" ? route.page : ""}`;
-    pageview(path);
-  }, [route.area, route.tab, route.page]);
-
-  useEffect(() => {
+    pageview(routeToPath(route).split("#")[0] || "/");
     applySeoMetadata(route);
   }, [route]);
 

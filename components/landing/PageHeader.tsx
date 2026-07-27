@@ -18,15 +18,19 @@ export function PageHeader({
     <section className="relative overflow-hidden border-b border-sand bg-gradient-to-b from-fog to-cream pt-28 pb-12">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-30" />
       <div className="mx-auto max-w-4xl px-5">
-        <button
-          onClick={() => goPage("home")}
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            goPage("home");
+          }}
           className="mb-5 inline-flex items-center gap-1.5 text-[12px] font-medium text-stone transition-colors hover:text-forest"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M11 18l-6-6 6-6" />
           </svg>
           Back to home
-        </button>
+        </a>
         <div className="flex items-center gap-2">
           <HelixMark size={20} className="text-moss" />
           <span className="text-[12px] font-bold uppercase tracking-[0.16em] text-moss">

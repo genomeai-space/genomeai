@@ -231,16 +231,7 @@ export function CTA() {
 }
 
 export function Footer() {
-  const { goPage, openAuth, route } = useStore();
-  const onHome = !route.page || route.page === "home";
-  const toSection = (id: string) => {
-    const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    if (onHome) scroll();
-    else {
-      goPage("home");
-      setTimeout(scroll, 90);
-    }
-  };
+  const { goPage, openAuth, navigateLanding } = useStore();
 
   const linkCls =
     "text-[13px] text-stone transition-colors hover:text-moss text-left";
@@ -269,12 +260,19 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2">
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                goPage("home");
+              }}
+              className="flex items-center gap-2"
+            >
               <HelixMark size={24} className="text-moss" />
               <span className="font-display text-lg font-semibold text-forest">
                 Genome<span className="text-moss">AI</span>
               </span>
-            </div>
+            </a>
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-stone">
               Engineer AI behavior through Digital DNA — structured, reusable, and
               measurable. Behavior is programmable.
@@ -311,11 +309,31 @@ export function Footer() {
               Product
             </h4>
             <ul className="mt-3 space-y-2.5">
-              <li><button className={linkCls} onClick={() => toSection("what")}>What is a Genome</button></li>
-              <li><button className={linkCls} onClick={() => toSection("playground")}>Playground</button></li>
-              <li><button className={linkCls} onClick={() => toSection("benchmark")}>Benchmark</button></li>
-              <li><button className={linkCls} onClick={() => goPage("pricing")}>Pricing</button></li>
-              <li><button className={linkCls} onClick={() => openAuth("request")}>Request access</button></li>
+              <li>
+                <a className={linkCls} href="/#what" onClick={(e) => { e.preventDefault(); navigateLanding("what"); }}>
+                  What is a Genome
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/#playground" onClick={(e) => { e.preventDefault(); navigateLanding("playground"); }}>
+                  Playground
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/#benchmark" onClick={(e) => { e.preventDefault(); navigateLanding("benchmark"); }}>
+                  Benchmark
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/pricing" onClick={(e) => { e.preventDefault(); goPage("pricing"); }}>
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <button type="button" className={linkCls} onClick={() => openAuth("request")}>
+                  Request access
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -337,7 +355,11 @@ export function Footer() {
                   <ExtIcon />
                 </a>
               </li>
-              <li><button className={linkCls} onClick={() => goPage("catalog")}>Gene Catalog</button></li>
+              <li>
+                <a className={linkCls} href="/catalog" onClick={(e) => { e.preventDefault(); goPage("catalog"); }}>
+                  Gene Catalog
+                </a>
+              </li>
               <li>
                 <a className={extLinkCls} href={SITE.resources.api} target="_blank" rel="noreferrer noopener">
                   API
@@ -367,16 +389,32 @@ export function Footer() {
               Company
             </h4>
             <ul className="mt-3 space-y-2.5">
-              <li><button className={linkCls} onClick={() => goPage("about")}>About</button></li>
               <li>
-                <a className={extLinkCls} href={SITE.resources.blog} target="_blank" rel="noreferrer noopener">
-                  Blog
+                <a className={linkCls} href="/about" onClick={(e) => { e.preventDefault(); goPage("about"); }}>
+                  About
+                </a>
+              </li>
+              <li>
+                <a className={extLinkCls} href={SITE.resources.changelog} target="_blank" rel="noreferrer noopener">
+                  Updates
                   <ExtIcon />
                 </a>
               </li>
-              <li><button className={linkCls} onClick={() => goPage("contact")}>Contact</button></li>
-              <li><button className={linkCls} onClick={() => goPage("privacy")}>Privacy Policy</button></li>
-              <li><button className={linkCls} onClick={() => goPage("terms")}>Terms of Service</button></li>
+              <li>
+                <a className={linkCls} href="/contact" onClick={(e) => { e.preventDefault(); goPage("contact"); }}>
+                  Contact
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/privacy" onClick={(e) => { e.preventDefault(); goPage("privacy"); }}>
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a className={linkCls} href="/terms" onClick={(e) => { e.preventDefault(); goPage("terms"); }}>
+                  Terms of Service
+                </a>
+              </li>
             </ul>
           </div>
 

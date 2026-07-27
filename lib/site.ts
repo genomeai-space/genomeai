@@ -21,6 +21,7 @@ export const SITE = {
     "CrewAI",
     "LangGraph",
     "model-agnostic",
+    "AI behavior engineering",
   ],
   social: {
     twitter: "https://x.com/genomeai",
@@ -32,9 +33,13 @@ export const SITE = {
     defaultTitle: "Genome AI — Engineer AI Behavior with Digital DNA",
     defaultDescription:
       "Genome AI helps teams design, test, benchmark, and version AI behavior with Digital DNA instead of prompt-only engineering.",
-    ogImage: "/og-image.svg",
+    // JPEG preferred over SVG for OG/Twitter crawlers and Ahrefs social previews
+    ogImage: "/og-image.jpg",
+    ogImageType: "image/jpeg",
+    ogImageWidth: 1024,
+    ogImageHeight: 1024,
     favicon: "/favicon.svg",
-    robots: "index,follow,max-image-preview:large",
+    robots: "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
   },
   // GitHub repo — resolves today (renders GitHub's own 404 if a path is pending),
   // so these links always OPEN instead of dead-ending on an unprovisioned subdomain.
@@ -46,7 +51,8 @@ export const SITE = {
     standard: "https://github.com/GenomeAI-space/genomeai#-the-one-idea",
     changelog: "https://github.com/GenomeAI-space/genomeai/releases",
     roadmap: "https://github.com/GenomeAI-space/genomeai#-roadmap",
-    blog: "https://genomeai.space/blog",
+    // Avoid linking a non-existent /blog (Ahrefs broken-page / 404 debt)
+    blog: "https://github.com/GenomeAI-space/genomeai/releases",
     api: "https://github.com/GenomeAI-space/genomeai",
   },
 } as const;
