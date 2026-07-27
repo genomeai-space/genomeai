@@ -1,12 +1,14 @@
-// Waitlist submissions — tries real backends in order, never "fake success" silently.
+// Waitlist submissions — real backends only (no fake success).
 //
-// Providers (first configured wins):
-// 1) VITE_WAITLIST_ENDPOINT — POST JSON to any webhook (Formspree, Make, custom API)
-// 2) Supabase table `waitlist` (anon insert; see docs/WAITLIST.md)
-// 3) FormSubmit ajax to SITE.email (works with zero extra infra)
+// Providers (first success wins):
+// 1) Supabase Edge Function `waitlist` (publishable key) — preferred
+// 2) VITE_WAITLIST_ENDPOINT — Formspree / custom webhook
+// 3) Direct Supabase table insert (anon RLS)
+// 4) FormSubmit → SITE.email
 
 import { SITE } from "@/lib/site";
 import { track } from "@/lib/analytics";
+import { getSupabaseConfig, supabase } from "@/lib/supabase";
 
 export interface WaitlistPayload {
   name: string;
@@ -19,7 +21,7 @@ export interface WaitlistPayload {
 }
 
 export type WaitlistResult =
-  | { ok: true; provider: string }
+  | { ok: true; provider: string; alreadyJoined?: boolean }
   | { ok: false; error: string };
 
 function clean(payload: WaitlistPayload): WaitlistPayload {
@@ -43,38 +45,86 @@ function validate(p: WaitlistPayload): string | null {
   return null;
 }
 
-async function postJson(url: string, body: Record<string, unknown>): Promise<void> {
-  const res = await fetch(url, {
+async function postJson(
+  url: string,
+  body: Record<string, unknown>,
+  headers: Record<string, string> = {}
+): Promise<Response> {
+  return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...headers,
     },
     body: JSON.stringify(body),
   });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(text || `Request failed (${res.status})`);
-  }
 }
 
-/** Generic webhook / Formspree-style endpoint */
+/** Preferred: Edge Function secured with publishable key */
+async function viaEdgeFunction(p: WaitlistPayload): Promise<WaitlistResult> {
+  const { functionsWaitlistUrl, publishableKey, configured } = getSupabaseConfig();
+  if (!configured || !functionsWaitlistUrl || !publishableKey) {
+    return { ok: false, error: "no-edge" };
+  }
+
+  const res = await postJson(
+    functionsWaitlistUrl,
+    {
+      name: p.name,
+      email: p.email,
+      org: p.org,
+      building: p.building,
+      currentMethod: p.currentMethod,
+      tier: p.tier,
+      source: p.source,
+    },
+    {
+      apikey: publishableKey,
+      Authorization: `Bearer ${publishableKey}`,
+    }
+  );
+
+  const data = (await res.json().catch(() => ({}))) as {
+    ok?: boolean;
+    error?: string;
+    alreadyJoined?: boolean;
+    provider?: string;
+  };
+
+  if (!res.ok || data.ok === false) {
+    // Function not deployed yet → fall through
+    if (res.status === 404 || res.status === 503) {
+      return { ok: false, error: "no-edge" };
+    }
+    throw new Error(data.error || `Waitlist function failed (${res.status})`);
+  }
+
+  return {
+    ok: true,
+    provider: data.provider || "edge_waitlist",
+    alreadyJoined: data.alreadyJoined,
+  };
+}
+
 async function viaEndpoint(p: WaitlistPayload): Promise<WaitlistResult> {
   const url = import.meta.env.VITE_WAITLIST_ENDPOINT as string | undefined;
   if (!url) return { ok: false, error: "no-endpoint" };
 
-  await postJson(url, {
+  const res = await postJson(url, {
     ...p,
     _subject: `Genome AI waitlist: ${p.name}`,
     submittedAt: new Date().toISOString(),
     site: SITE.url,
   });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `Request failed (${res.status})`);
+  }
   return { ok: true, provider: "endpoint" };
 }
 
-/** Supabase `waitlist` table insert (RLS: anon insert only) */
-async function viaSupabase(p: WaitlistPayload): Promise<WaitlistResult> {
-  const { supabase } = await import("./supabase");
+async function viaSupabaseTable(p: WaitlistPayload): Promise<WaitlistResult> {
   if (!supabase) return { ok: false, error: "no-supabase" };
 
   const row = {
@@ -90,16 +140,14 @@ async function viaSupabase(p: WaitlistPayload): Promise<WaitlistResult> {
 
   const { error } = await supabase.from("waitlist").insert(row);
   if (error) {
-    // Table missing / RLS — fall through to next provider
+    if (error.code === "23505" || /duplicate|unique/i.test(error.message)) {
+      return { ok: true, provider: "supabase", alreadyJoined: true };
+    }
     throw new Error(error.message);
   }
   return { ok: true, provider: "supabase" };
 }
 
-/**
- * FormSubmit.co ajax — emails SITE.email without a custom backend.
- * Requires one-time inbox confirmation the first time the address is used.
- */
 async function viaFormSubmit(p: WaitlistPayload): Promise<WaitlistResult> {
   const email = SITE.email;
   if (!email || email.includes("example")) {
@@ -107,7 +155,7 @@ async function viaFormSubmit(p: WaitlistPayload): Promise<WaitlistResult> {
   }
 
   const url = `https://formsubmit.co/ajax/${encodeURIComponent(email)}`;
-  await postJson(url, {
+  const res = await postJson(url, {
     name: p.name,
     email: p.email,
     organization: p.org || "",
@@ -119,21 +167,22 @@ async function viaFormSubmit(p: WaitlistPayload): Promise<WaitlistResult> {
     _template: "table",
     _captcha: "false",
   });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(text || `FormSubmit failed (${res.status})`);
+  }
   return { ok: true, provider: "formsubmit" };
 }
 
-/**
- * Submit waitlist entry. Tries endpoint → Supabase → FormSubmit.
- * Returns ok:false only if every available provider fails.
- */
 export async function submitWaitlist(raw: WaitlistPayload): Promise<WaitlistResult> {
   const payload = clean(raw);
   const invalid = validate(payload);
   if (invalid) return { ok: false, error: invalid };
 
   const attempts: Array<(p: WaitlistPayload) => Promise<WaitlistResult>> = [
+    viaEdgeFunction,
     viaEndpoint,
-    viaSupabase,
+    viaSupabaseTable,
     viaFormSubmit,
   ];
 
@@ -150,14 +199,17 @@ export async function submitWaitlist(raw: WaitlistPayload): Promise<WaitlistResu
         try {
           localStorage.setItem(
             "genome-ai:waitlist",
-            JSON.stringify({ email: payload.email, at: Date.now(), provider: result.provider })
+            JSON.stringify({
+              email: payload.email,
+              at: Date.now(),
+              provider: result.provider,
+            })
           );
         } catch {
           /* ignore */
         }
         return result;
       }
-      // soft skip (provider not configured)
       if (result.error.startsWith("no-")) continue;
       errors.push(result.error);
     } catch (e) {
