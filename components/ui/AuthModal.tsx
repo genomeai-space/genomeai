@@ -3,6 +3,8 @@ import { useStore } from "@/lib/store";
 import { Button, Modal } from "@/components/ui/primitives";
 import { BrandLogo } from "@/components/ui/dna";
 import { TIERS, TIER_MAP, type TierId } from "@/lib/pricing";
+import { submitWaitlist } from "@/lib/waitlist";
+import { SITE } from "@/lib/site";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -16,8 +18,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Early-access waitlist only.
- * Product entry is "Try demo" (startDemo) — no sign-in modal.
+ * Early-access waitlist — submits to a real backend (see lib/waitlist.ts).
+ * Product entry is still "Try demo" (startDemo).
  */
 export function AuthModal() {
   const { route, closeAuth, startDemo } = useStore();
@@ -30,13 +32,47 @@ export function AuthModal() {
   const [currentMethod, setCurrentMethod] = useState("");
   const [tier, setTier] = useState<TierId | "">("");
   const [requested, setRequested] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [provider, setProvider] = useState<string | null>(null);
+
+  const resetForm = () => {
+    setRequested(false);
+    setLoading(false);
+    setError(null);
+    setProvider(null);
+  };
 
   const close = () => {
-    setRequested(false);
+    resetForm();
     closeAuth();
   };
 
-  const submitRequest = () => setRequested(true);
+  const submitRequest = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const result = await submitWaitlist({
+        name,
+        email,
+        org,
+        building,
+        currentMethod,
+        tier: tier || undefined,
+        source: "waitlist_modal",
+      });
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setProvider(result.provider);
+      setRequested(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const openDemo = () => {
     closeAuth();
@@ -62,15 +98,16 @@ export function AuthModal() {
             </svg>
           </div>
           <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-moss">
-            Request Received
+            You're on the list
           </span>
           <h3 className="mt-1 font-display text-2xl font-bold text-forest">
-            You're on the early access list
+            Request received
           </h3>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-stone">
-            We'll review applications in batches and reach out at{" "}
+            We'll reach out at{" "}
             <span className="font-medium text-forest">{email || "your email"}</span> when your
-            spot opens.
+            spot opens. Your submission was saved
+            {provider ? ` via ${provider === "formsubmit" ? "email" : provider}` : ""}.
           </p>
 
           {(tier || building.trim()) && (
@@ -78,7 +115,7 @@ export function AuthModal() {
               {tier && (
                 <div className="flex items-center justify-between rounded-lg bg-mint/30 px-3 py-2">
                   <span className="text-[12px] text-stone">
-                    Tier interested in ·{" "}
+                    Tier ·{" "}
                     <span className="font-display text-[13px] font-bold text-forest">
                       {TIER_MAP[tier].name}
                     </span>
@@ -92,7 +129,7 @@ export function AuthModal() {
                   {building.trim().length > 90
                     ? building.trim().slice(0, 90) + "…"
                     : building.trim()}
-                  . Genome engineering fits that perfectly.
+                  .
                 </p>
               )}
             </div>
@@ -116,10 +153,10 @@ export function AuthModal() {
               Free Beta
             </span>
             <h3 className="mt-3 font-display text-2xl font-bold text-forest">
-              Request early access
+              Join the waitlist
             </h3>
             <p className="mt-1.5 text-sm text-stone">
-              Optional waitlist for updates. Or skip ahead and try the full demo instantly —
+              Get product updates and early access. Or skip ahead and try the full demo —
               no account required.
             </p>
           </div>
@@ -150,33 +187,43 @@ export function AuthModal() {
             <SectionLabel>About you</SectionLabel>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-[12px] font-semibold text-stone">Name</label>
+                <label className="mb-1 block text-[12px] font-semibold text-stone" htmlFor="wl-name">
+                  Name
+                </label>
                 <input
+                  id="wl-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Ada"
+                  autoComplete="name"
                   className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-[12px] font-semibold text-stone">Email</label>
+                <label className="mb-1 block text-[12px] font-semibold text-stone" htmlFor="wl-email">
+                  Email
+                </label>
                 <input
+                  id="wl-email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
+                  autoComplete="email"
                   placeholder="you@lab.dev"
                   className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
                 />
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-[12px] font-semibold text-stone">
+              <label className="mb-1 block text-[12px] font-semibold text-stone" htmlFor="wl-org">
                 Organization <span className="font-normal text-mist">(optional)</span>
               </label>
               <input
+                id="wl-org"
                 value={org}
                 onChange={(e) => setOrg(e.target.value)}
                 placeholder="Lab / company"
+                autoComplete="organization"
                 className="w-full rounded-xl border border-sand bg-cream/50 px-3.5 py-2.5 text-sm outline-none focus:border-moss focus:bg-paper"
               />
             </div>
@@ -220,15 +267,30 @@ export function AuthModal() {
               ))}
             </div>
 
+            {error && (
+              <div className="rounded-xl border border-clay/30 bg-clay/10 px-3 py-2.5 text-[12.5px] text-clay">
+                {error}
+                <div className="mt-1 text-[11px] text-stone">
+                  Or email us at{" "}
+                  <a className="font-semibold text-moss underline" href={`mailto:${SITE.email}`}>
+                    {SITE.email}
+                  </a>
+                </div>
+              </div>
+            )}
+
             <Button
               className="mt-2 w-full"
               size="lg"
               variant="secondary"
               onClick={submitRequest}
-              disabled={!email.trim() || !name.trim() || !tier}
+              disabled={loading || !email.trim() || !name.trim() || !tier}
             >
-              Join the waitlist →
+              {loading ? "Submitting…" : "Join the waitlist →"}
             </Button>
+            <p className="text-center text-[11px] text-mist">
+              We only use this to contact you about Genome AI. No spam.
+            </p>
           </div>
         </>
       )}
